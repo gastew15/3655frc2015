@@ -19,9 +19,8 @@ import org.usfirst.frc.team3655.robot.subsystems.*;
 public class Robot extends IterativeRobot {
 	
 	//Update EVERYtime you make a change to make sure you deployed the correct version!!
-	public static final String VERSION = "0.0.01";
+	public static final String VERSION = "0.0.03";
 	
-	public static final ExampleSubsystem exampleSubsystem = new ExampleSubsystem();
 	public static final Elevator elevator = new Elevator();
 	public static OI oi;
 
@@ -36,7 +35,6 @@ public class Robot extends IterativeRobot {
     	System.out.println("Robot Init v: " + VERSION);
 		oi = new OI();
         // instantiate the command used for the autonomous period
-        autonomousCommand = new ExampleCommand();
         raiseElevator = new RaiseElevator();
     }
 	

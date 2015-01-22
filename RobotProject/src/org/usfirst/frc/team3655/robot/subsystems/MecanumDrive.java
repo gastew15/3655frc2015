@@ -5,17 +5,24 @@ import org.usfirst.frc.team3655.robot.RobotMap;
 import edu.wpi.first.wpilibj.RobotDrive;
 
 /**
- *
+ * Mecanum Drive base for robot
+ * @author G. Stewart
+ * @version 1/21/2015
  */
-public class MecanumDrive extends Subsystem {
-    
-    // Put methods for controlling this subsystem
-    // here. Call these from Commands.
-	RobotDrive mecanumBase = new RobotDrive(RobotMap.forwardLeftMotor, RobotMap.rearLeftMotor, RobotMap.forwardRightMotor, RobotMap.rearRightMotor);
 
-    public void initDefaultCommand() {
-        // Set the default command for a subsystem here.
-        //setDefaultCommand(new MySpecialCommand());
+public class MecanumDrive extends Subsystem 
+{
+	RobotDrive mecanumBase = new RobotDrive(RobotMap.driveForwardLeftMotor, RobotMap.driveRearLeftMotor, RobotMap.driveForwardRightMotor, RobotMap.driveRearRightMotor);
+
+    public void initDefaultCommand() 
+    {
+        
     }
+    
+    public void setDrive(double x, double y, double rotation, double gyroAngle)
+    {
+    	mecanumBase.mecanumDrive_Cartesian(x, y, rotation, gyroAngle);
+    }
+    
 }
 

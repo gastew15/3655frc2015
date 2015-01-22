@@ -3,8 +3,6 @@ package org.usfirst.frc.team3655.robot;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 
-import org.usfirst.frc.team3655.robot.commands.ExampleCommand;
-
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
