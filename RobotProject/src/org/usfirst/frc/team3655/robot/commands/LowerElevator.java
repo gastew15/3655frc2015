@@ -1,19 +1,19 @@
 package org.usfirst.frc.team3655.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team3655.robot.Robot;
+import edu.wpi.first.wpilibj.command.Command;
 
 /**
- * Simple Command to raise elevator
+ * Simple Command to lower elevator
  * @author G. Stewart
  * @version 1/22/2015
  */
 
-public class RaiseElevator extends Command 
+public class LowerElevator extends Command 
 {
 	private boolean tripped = false;
 	
-    public RaiseElevator() 
+    public LowerElevator() 
     {
     	requires(Robot.elevator);
     	setTimeout(1);
@@ -21,7 +21,7 @@ public class RaiseElevator extends Command
 
     // Called just before this Command runs the first time
     protected void initialize() 
-    {	
+    {
     	
     }
 
@@ -29,7 +29,7 @@ public class RaiseElevator extends Command
     protected void execute() 
     {
     	if(!tripped) {
-    		Robot.elevator.setMainArm(true);
+    		Robot.elevator.setMainArm(false);
     		tripped = true;
     	}
     }

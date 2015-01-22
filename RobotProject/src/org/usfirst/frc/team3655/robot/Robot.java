@@ -20,8 +20,10 @@ public class Robot extends IterativeRobot {
 	
 	//Update EVERYtime you make a change to make sure you deployed the correct version!!
 	public static final String VERSION = "0.0.03";
-	
 	public static final Elevator elevator = new Elevator();
+	public static final Gyroscope gyro = new Gyroscope();
+	public static final MecanumDrive mecanumDrive = new MecanumDrive();
+	public static final RotaryEncoder encoder = new RotaryEncoder();
 	public static OI oi;
 
     Command autonomousCommand;
