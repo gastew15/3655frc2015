@@ -24,10 +24,10 @@ public class Robot extends IterativeRobot {
 	public static final Gyroscope gyro = new Gyroscope();
 	public static final MecanumDrive mecanumDrive = new MecanumDrive();
 	public static final RotaryEncoder encoder = new RotaryEncoder();
-	public static OI oi;
+	public static OI oi = new OI();
 
     Command autonomousCommand;
-    Command raiseElevator;
+    Command teleOpDrive;
 
     /**
      * This function is run when the robot is first started up and should be
@@ -37,7 +37,8 @@ public class Robot extends IterativeRobot {
     	System.out.println("Robot Init v: " + VERSION);
 		oi = new OI();
         // instantiate the command used for the autonomous period
-        raiseElevator = new RaiseElevator();
+		teleOpDrive = new TeleOpDrive();
+        
     }
 	
 	public void disabledPeriodic() {
@@ -46,7 +47,9 @@ public class Robot extends IterativeRobot {
 
     public void autonomousInit() {
         // schedule the autonomous command (example)
-        if (autonomousCommand != null) autonomousCommand.start();
+        if (autonomousCommand != null) {
+        	autonomousCommand.start();
+        }
     }
 
     /**
@@ -61,7 +64,13 @@ public class Robot extends IterativeRobot {
         // teleop starts running. If you want the autonomous to 
         // continue until interrupted by another command, remove
         // this line or comment it out.
-        if (autonomousCommand != null) autonomousCommand.cancel();
+        if (autonomousCommand != null) {
+        	autonomousCommand.cancel();
+        }
+        
+        if (teleOpDrive != null) { 
+        	teleOpDrive.start();
+        }
     }
 
     /**
@@ -70,6 +79,9 @@ public class Robot extends IterativeRobot {
      */
     public void disabledInit(){
     	//Test Test
+    	if (teleOpDrive != null) { 
+        	teleOpDrive.cancel();
+        }
     }
 
     /**
@@ -77,6 +89,7 @@ public class Robot extends IterativeRobot {
      */
     public void teleopPeriodic() {
         Scheduler.getInstance().run();
+        oi.teleOpJoyStick();
     }
     
     /**
