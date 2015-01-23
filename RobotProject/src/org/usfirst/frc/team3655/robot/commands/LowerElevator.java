@@ -28,7 +28,7 @@ public class LowerElevator extends Command
     protected void execute() 
     {
     	if(!tripped) {
-    		Robot.elevator.setMainArm(false);
+    		Robot.elevator.setMainArm(true);
     		tripped = true;
     	}
     }
