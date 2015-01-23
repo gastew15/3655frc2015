@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.command.Command;
  * @author G. Stewart
  * @version 1/22/2015
  */
-
 public class LowerElevator extends Command 
 {
 	private boolean tripped = false;
