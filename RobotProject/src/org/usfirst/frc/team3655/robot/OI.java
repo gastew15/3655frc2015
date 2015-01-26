@@ -6,7 +6,6 @@ import org.usfirst.frc.team3655.robot.commands.PutDownBox;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.AxisType;
 
 /**
  * This class is the glue that binds the controls on the physical operator
