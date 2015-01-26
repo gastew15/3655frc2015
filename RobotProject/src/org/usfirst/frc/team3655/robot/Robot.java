@@ -24,7 +24,7 @@ public class Robot extends IterativeRobot
 	public static final Gyroscope gyro = new Gyroscope();
 	public static final MecanumDrive mecanumDrive = new MecanumDrive();
 	public static final RotaryEncoder encoder = new RotaryEncoder();
-	public static OI oi;
+	public static OI oi = new OI();
 	
 	//Commands
     Command teleOpDrive;
@@ -36,7 +36,6 @@ public class Robot extends IterativeRobot
     public void robotInit() 
     {
     	System.out.println("Robot Init v: " + VERSION);
-		oi = new OI();
 		teleOpDrive = new TeleOpDrive();      
     }
 	
