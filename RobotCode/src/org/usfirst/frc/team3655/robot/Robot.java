@@ -83,7 +83,8 @@ public class Robot extends SampleRobot
         		putDownBox();
         	}
         	
-            mecanumDrive.mecanumDrive_Polar(getXBox1X(), getXBox1Y(), getXBox1Z());//gyroscope.getAngle()); // drive with mecanum sytle based on field not robot
+            //mecanumDrive.mecanumDrive_Polar(xBox1.getMagnitude(), -1 * xBox1.getDirectionDegrees(), xBox1.getThrottle());
+        	mecanumDrive.mecanumDrive_Polar(getXBox1X(), getXBox1Y(), getXBox1Z());
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
@@ -136,8 +137,9 @@ public class Robot extends SampleRobot
     
     public double getXBox1X()
     {
-    	if(xBox1.getRawAxis(1) > xBox1DeadzoneX || xBox1.getRawAxis(1) < -xBox1DeadzoneX) {
-    		return xBox1.getRawAxis(1);
+    	//System.out.println("X: " +  xBox1.getX());
+    	if(xBox1.getRawAxis(0) > xBox1DeadzoneX || xBox1.getRawAxis(0) < -xBox1DeadzoneX) {
+    		return xBox1.getRawAxis(0);
     	} else {
     		return 0;
     	}
@@ -145,8 +147,9 @@ public class Robot extends SampleRobot
     
     public double getXBox1Y()
     {
-    	if(xBox1.getRawAxis(2) > xBox1DeadzoneY || xBox1.getRawAxis(2) < -xBox1DeadzoneY) {
-    		return -1 * xBox1.getRawAxis(2);
+    	//System.out.println("Y: " +  xBox1.getY());
+    	if(xBox1.getRawAxis(1) > xBox1DeadzoneY || xBox1.getRawAxis(1) < -xBox1DeadzoneY) {
+    		return xBox1.getRawAxis(1);
     	} else {
     		return 0;
     	}
@@ -154,8 +157,9 @@ public class Robot extends SampleRobot
     
     public double getXBox1Z()
     {
-    	if(xBox1.getRawAxis(3) > xBox1DeadzoneZ || xBox1.getRawAxis(3) < -xBox1DeadzoneZ) {
-    		return -1 * xBox1.getRawAxis(3);
+    	//System.out.println("Z: " +  xBox1.getThrottle());
+    	if((-xBox1.getRawAxis(2) + xBox1.getRawAxis(3)) > xBox1DeadzoneZ || (-xBox1.getRawAxis(2) + xBox1.getRawAxis(3)) < -xBox1DeadzoneZ) {
+    		return (-xBox1.getRawAxis(2) + xBox1.getRawAxis(3));
     	} else {
     		return 0;
     	}
