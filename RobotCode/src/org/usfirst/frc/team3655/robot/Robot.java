@@ -32,10 +32,10 @@ public class Robot extends SampleRobot
     	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
     	gyroscope = new Gyro(RobotMap.gyroInput);
     	mecanumDrive.setExpiration(0.1);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, false);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
         xBox1 = new Joystick(0);
     }
 
@@ -76,15 +76,24 @@ public class Robot extends SampleRobot
         	if(xBox1.getRawButton(4)) {
         		setElevator(false);
         	}
+        	/*
         	if(xBox1.getRawButton(5)) {
         		pickUpBox();
         	}
         	if(xBox1.getRawButton(6)) {
         		putDownBox();
         	}
+        	*/
+        	if(xBox1.getRawAxis(2) > 0.5) {
+        		pickUpBox();
+        	}
+        	if(xBox1.getRawAxis(3) > 0.5) {
+        		putDownBox();
+        	}
         	
             //mecanumDrive.mecanumDrive_Polar(xBox1.getMagnitude(), -1 * xBox1.getDirectionDegrees(), xBox1.getThrottle());
-        	mecanumDrive.mecanumDrive_Polar(getXBox1X(), getXBox1Y(), getXBox1Z());
+        	//mecanumDrive.mecanumDrive_Polar(getXBox1X(), getXBox1Y(), getXBox1Z());
+        	mecanumDrive.tankDrive(xBox1.getRawAxis(1), xBox1.getRawAxis(5), true);
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
@@ -138,8 +147,8 @@ public class Robot extends SampleRobot
     public double getXBox1X()
     {
     	//System.out.println("X: " +  xBox1.getX());
-    	if(xBox1.getRawAxis(0) > xBox1DeadzoneX || xBox1.getRawAxis(0) < -xBox1DeadzoneX) {
-    		return xBox1.getRawAxis(0);
+    	if(xBox1.getMagnitude() > xBox1DeadzoneX || xBox1.getMagnitude() < -xBox1DeadzoneX) {
+    		return xBox1.getMagnitude() * - 1;
     	} else {
     		return 0;
     	}
@@ -148,8 +157,8 @@ public class Robot extends SampleRobot
     public double getXBox1Y()
     {
     	//System.out.println("Y: " +  xBox1.getY());
-    	if(xBox1.getRawAxis(1) > xBox1DeadzoneY || xBox1.getRawAxis(1) < -xBox1DeadzoneY) {
-    		return xBox1.getRawAxis(1);
+    	if(xBox1.getDirectionDegrees() > xBox1DeadzoneY || xBox1.getDirectionDegrees() < -xBox1DeadzoneY) {
+    		return xBox1.getDirectionDegrees() * - 1;
     	} else {
     		return 0;
     	}
@@ -158,10 +167,17 @@ public class Robot extends SampleRobot
     public double getXBox1Z()
     {
     	//System.out.println("Z: " +  xBox1.getThrottle());
-    	if((-xBox1.getRawAxis(2) + xBox1.getRawAxis(3)) > xBox1DeadzoneZ || (-xBox1.getRawAxis(2) + xBox1.getRawAxis(3)) < -xBox1DeadzoneZ) {
-    		return (-xBox1.getRawAxis(2) + xBox1.getRawAxis(3));
+    	if(xBox1.getTwist() > xBox1DeadzoneZ || xBox1.getTwist() < -xBox1DeadzoneZ) {
+    		return xBox1.getTwist();
+    	} else {
+    		return 0.0;
+    	}
+    	/*
+    	if((xBox1.getRawAxis(2) - xBox1.getRawAxis(3)) > xBox1DeadzoneZ || (xBox1.getRawAxis(2) - xBox1.getRawAxis(3)) < -xBox1DeadzoneZ) {
+    		return (xBox1.getRawAxis(2) - xBox1.getRawAxis(3));
     	} else {
     		return 0;
     	}
+    	*/
     }
 }
