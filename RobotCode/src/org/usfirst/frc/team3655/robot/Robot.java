@@ -21,9 +21,12 @@ public class Robot extends SampleRobot
     private DoubleSolenoid solenoidMainElevator;
     private DoubleSolenoid solenoidElevatorKickers;
     private Gyro gyroscope;
-    private double xBox1DeadzoneX = .1;
-    private double xBox1DeadzoneY = .1;
-    private double xBox1DeadzoneZ = .1;
+    private double magnitude = 0;
+	private double direction = 0;
+	private double rotation = 0;
+	private double magnitudeDeadzone = .1;
+	private double directionDeadzone = .1;
+	private double rotationDeadzone = .25;
 
     public Robot() 
     {
@@ -32,11 +35,13 @@ public class Robot extends SampleRobot
     	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
     	gyroscope = new Gyro(RobotMap.gyroInput);
     	mecanumDrive.setExpiration(0.1);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
         xBox1 = new Joystick(0);
+        xBox1.setAxisChannel(Joystick.AxisType.kX, 1);
+        xBox1.setAxisChannel(Joystick.AxisType.kY, 0);
     }
 
     /**
@@ -83,9 +88,22 @@ public class Robot extends SampleRobot
         		putDownBox();
         	}
         	
-        	//mecanumDrive.tankDrive(xBox1.getRawAxis(1), xBox1.getRawAxis(5), true);
-        	mecanumDrive.mecanumDrive_Polar(xBox1.getMagnitude(), xBox1.getDirectionDegrees(), xBox1.getRawAxis(2) - xBox1.getRawAxis(3));
-        	//teleOpDrive();
+        	if(xBox1.getMagnitude() > magnitudeDeadzone || xBox1.getMagnitude() < -magnitudeDeadzone)
+        		magnitude = xBox1.getMagnitude();
+        	else
+        		magnitude = 0;
+        	
+        	if(xBox1.getDirectionDegrees() > directionDeadzone || xBox1.getDirectionDegrees() < -directionDeadzone)
+        		direction = xBox1.getDirectionDegrees();
+        	else
+        		direction = xBox1.getDirectionDegrees();
+        	
+        	if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > rotationDeadzone || xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -rotationDeadzone)
+        		rotation = xBox1.getRawAxis(2) - xBox1.getRawAxis(3);
+        	else
+        		rotation = 0;
+        	
+        	mecanumDrive.mecanumDrive_Polar(magnitude, direction , rotation);
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
@@ -133,49 +151,6 @@ public class Robot extends SampleRobot
     		solenoidMainElevator.set(DoubleSolenoid.Value.kForward);
     	} else {
     		solenoidMainElevator.set(DoubleSolenoid.Value.kReverse);
-    	}
-    }
-
-    public void teleOpDrive()
-    {
-    	//X Y Driving
-    	if(((xBox1.getX() > .1 && xBox1.getX() < .5) || (xBox1.getX() < -.1 && xBox1.getX() > -.5)) || ((xBox1.getY() > .1 && xBox1.getY() < .5) || (xBox1.getY() < -.1 && xBox1.getY() > -.5))) {
-    		mecanumDrive.setLeftRightMotorOutputs(xBox1.getMagnitude(), xBox1.getDirectionDegrees());
-    	}
-    	else
-    	{
-    		if(xBox1.getX() > .5 && xBox1.getY() > .5)	
-    		{
-    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
-    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, false);
-    	    	
-    	    	mecanumDrive.setLeftRightMotorOutputs((xBox1.getX() + xBox1.getY()) / 2, (xBox1.getX() + xBox1.getY()) / 2);
-    	    	
-    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
-    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-    		}
-    		else if(xBox1.getX() < -.5 && xBox1.getY() < -.5)
-    		{
-    			mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
-    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
-    	    	
-    	    	mecanumDrive.setLeftRightMotorOutputs((xBox1.getX() + xBox1.getY()) / 2, (xBox1.getX() + xBox1.getY()) / 2);
-    	    	
-    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
-    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
-    		}
-    	}  	
-    	
-    	//Rotation
-    	if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > .2)
-    	{
-    		//Left
-    		mecanumDrive.setLeftRightMotorOutputs(-(xBox1.getRawAxis(2) - xBox1.getRawAxis(3)),(xBox1.getRawAxis(2) - xBox1.getRawAxis(3)));
-    	}
-    	else if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -.2)
-    	{
-    		//Right
-    		mecanumDrive.setLeftRightMotorOutputs((xBox1.getRawAxis(2) - xBox1.getRawAxis(3)),-(xBox1.getRawAxis(2) - xBox1.getRawAxis(3)));
     	}
     }
 }
