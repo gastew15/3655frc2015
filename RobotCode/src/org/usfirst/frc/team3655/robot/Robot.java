@@ -76,24 +76,16 @@ public class Robot extends SampleRobot
         	if(xBox1.getRawButton(4)) {
         		setElevator(false);
         	}
-        	/*
         	if(xBox1.getRawButton(5)) {
         		pickUpBox();
         	}
         	if(xBox1.getRawButton(6)) {
         		putDownBox();
         	}
-        	*/
-        	if(xBox1.getRawAxis(2) > 0.5) {
-        		pickUpBox();
-        	}
-        	if(xBox1.getRawAxis(3) > 0.5) {
-        		putDownBox();
-        	}
         	
-            //mecanumDrive.mecanumDrive_Polar(xBox1.getMagnitude(), -1 * xBox1.getDirectionDegrees(), xBox1.getThrottle());
-        	//mecanumDrive.mecanumDrive_Polar(getXBox1X(), getXBox1Y(), getXBox1Z());
-        	mecanumDrive.tankDrive(xBox1.getRawAxis(1), xBox1.getRawAxis(5), true);
+        	//mecanumDrive.tankDrive(xBox1.getRawAxis(1), xBox1.getRawAxis(5), true);
+        	mecanumDrive.mecanumDrive_Polar(xBox1.getMagnitude(), xBox1.getDirectionDegrees(), xBox1.getRawAxis(2) - xBox1.getRawAxis(3));
+        	//teleOpDrive();
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
@@ -143,41 +135,47 @@ public class Robot extends SampleRobot
     		solenoidMainElevator.set(DoubleSolenoid.Value.kReverse);
     	}
     }
-    
-    public double getXBox1X()
+
+    public void teleOpDrive()
     {
-    	//System.out.println("X: " +  xBox1.getX());
-    	if(xBox1.getMagnitude() > xBox1DeadzoneX || xBox1.getMagnitude() < -xBox1DeadzoneX) {
-    		return xBox1.getMagnitude() * - 1;
-    	} else {
-    		return 0;
+    	//X Y Driving
+    	if(((xBox1.getX() > .1 && xBox1.getX() < .5) || (xBox1.getX() < -.1 && xBox1.getX() > -.5)) || ((xBox1.getY() > .1 && xBox1.getY() < .5) || (xBox1.getY() < -.1 && xBox1.getY() > -.5))) {
+    		mecanumDrive.setLeftRightMotorOutputs(xBox1.getMagnitude(), xBox1.getDirectionDegrees());
     	}
-    }
-    
-    public double getXBox1Y()
-    {
-    	//System.out.println("Y: " +  xBox1.getY());
-    	if(xBox1.getDirectionDegrees() > xBox1DeadzoneY || xBox1.getDirectionDegrees() < -xBox1DeadzoneY) {
-    		return xBox1.getDirectionDegrees() * - 1;
-    	} else {
-    		return 0;
+    	else
+    	{
+    		if(xBox1.getX() > .5 && xBox1.getY() > .5)	
+    		{
+    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, true);
+    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, false);
+    	    	
+    	    	mecanumDrive.setLeftRightMotorOutputs((xBox1.getX() + xBox1.getY()) / 2, (xBox1.getX() + xBox1.getY()) / 2);
+    	    	
+    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
+    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
+    		}
+    		else if(xBox1.getX() < -.5 && xBox1.getY() < -.5)
+    		{
+    			mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
+    	    	
+    	    	mecanumDrive.setLeftRightMotorOutputs((xBox1.getX() + xBox1.getY()) / 2, (xBox1.getX() + xBox1.getY()) / 2);
+    	    	
+    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
+    	    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
+    		}
+    	}  	
+    	
+    	//Rotation
+    	if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > .2)
+    	{
+    		//Left
+    		mecanumDrive.setLeftRightMotorOutputs(-(xBox1.getRawAxis(2) - xBox1.getRawAxis(3)),(xBox1.getRawAxis(2) - xBox1.getRawAxis(3)));
     	}
-    }
-    
-    public double getXBox1Z()
-    {
-    	//System.out.println("Z: " +  xBox1.getThrottle());
-    	if(xBox1.getTwist() > xBox1DeadzoneZ || xBox1.getTwist() < -xBox1DeadzoneZ) {
-    		return xBox1.getTwist();
-    	} else {
-    		return 0.0;
+    	else if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -.2)
+    	{
+    		//Right
+    		mecanumDrive.setLeftRightMotorOutputs((xBox1.getRawAxis(2) - xBox1.getRawAxis(3)),-(xBox1.getRawAxis(2) - xBox1.getRawAxis(3)));
     	}
-    	/*
-    	if((xBox1.getRawAxis(2) - xBox1.getRawAxis(3)) > xBox1DeadzoneZ || (xBox1.getRawAxis(2) - xBox1.getRawAxis(3)) < -xBox1DeadzoneZ) {
-    		return (xBox1.getRawAxis(2) - xBox1.getRawAxis(3));
-    	} else {
-    		return 0;
-    	}
-    	*/
     }
 }
