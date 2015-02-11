@@ -26,7 +26,9 @@ public class Robot extends SampleRobot
 	private double rotation = 0;
 	private double magnitudeDeadzone = .1;
 	private double directionDeadzone = .1;
-	private double rotationDeadzone = .25;
+	private double rotationDeadzone = .1;
+	private int autonStepNum = 0;
+	private int autonMode = 0;
 
     public Robot() 
     {
@@ -45,16 +47,18 @@ public class Robot extends SampleRobot
     }
 
     /**
-     * Blank
+     * Auton Code
      */
     public void autonomous() 
     {
-    	/*
-        myRobot.setSafetyEnabled(false);
-        myRobot.drive(-0.5, 0.0);	// drive forwards half speed
-        Timer.delay(2.0);		//    for 2 seconds
-        myRobot.drive(0.0, 0.0);	// stop robot
-        */
+    	switch(autonStepNum)
+    	{
+    		case 0:
+    		//Reset Variables For Auton Here
+    		break;
+    		
+    		//Put in additonal steps here
+    	}
     }
 
     /**
@@ -88,15 +92,15 @@ public class Robot extends SampleRobot
         		putDownBox();
         	}
         	
-        	if(xBox1.getMagnitude() > magnitudeDeadzone || xBox1.getMagnitude() < -magnitudeDeadzone)
-        		magnitude = xBox1.getMagnitude();
+        	if(xBox1.getY() > magnitudeDeadzone || xBox1.getY() < -magnitudeDeadzone)
+        		magnitude = xBox1.getY();
         	else
         		magnitude = 0;
         	
-        	if(xBox1.getDirectionDegrees() > directionDeadzone || xBox1.getDirectionDegrees() < -directionDeadzone)
-        		direction = xBox1.getDirectionDegrees();
+        	if(xBox1.getX() > directionDeadzone || xBox1.getX() < -directionDeadzone)
+        		direction = xBox1.getX();
         	else
-        		direction = xBox1.getDirectionDegrees();
+        		direction = 0;
         	
         	if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > rotationDeadzone || xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -rotationDeadzone)
         		rotation = xBox1.getRawAxis(2) - xBox1.getRawAxis(3);
