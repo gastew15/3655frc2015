@@ -8,10 +8,10 @@ package org.usfirst.frc.team3655.robot;
 public class RobotMap 
 {	
 	//PWM
-    public static int driveForwardLeftMotor = 1;
-    public static int driveForwardRightMotor = 0;
-    public static int driveRearLeftMotor = 3;
-    public static int driveRearRightMotor = 2;
+    public static int driveForwardLeftMotor = 2;
+    public static int driveForwardRightMotor = 3;
+    public static int driveRearLeftMotor = 0;
+    public static int driveRearRightMotor = 1;
     
     //DIO
 	public static int rotarEncoderForwardLeftA = 0;

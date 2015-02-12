@@ -29,6 +29,7 @@ public class Robot extends SampleRobot
 	private double rotationDeadzone = .1;
 	private int autonStepNum = 0;
 	private int autonMode = 0;
+	
 
     public Robot() 
     {
@@ -42,8 +43,6 @@ public class Robot extends SampleRobot
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
         xBox1 = new Joystick(0);
-        xBox1.setAxisChannel(Joystick.AxisType.kX, 1);
-        xBox1.setAxisChannel(Joystick.AxisType.kY, 0);
     }
 
     /**
@@ -92,13 +91,13 @@ public class Robot extends SampleRobot
         		putDownBox();
         	}
         	
-        	if(xBox1.getY() > magnitudeDeadzone || xBox1.getY() < -magnitudeDeadzone)
-        		magnitude = xBox1.getY();
+        	if(xBox1.getMagnitude() > magnitudeDeadzone || xBox1.getMagnitude() < -magnitudeDeadzone)
+        		magnitude = xBox1.getMagnitude();
         	else
         		magnitude = 0;
         	
-        	if(xBox1.getX() > directionDeadzone || xBox1.getX() < -directionDeadzone)
-        		direction = xBox1.getX();
+        	if(xBox1.getDirectionDegrees() > directionDeadzone || xBox1.getDirectionDegrees() < -directionDeadzone)
+        		direction = xBox1.getDirectionDegrees();
         	else
         		direction = 0;
         	
