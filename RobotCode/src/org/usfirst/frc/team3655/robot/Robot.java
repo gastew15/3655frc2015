@@ -21,11 +21,11 @@ public class Robot extends SampleRobot
     private DoubleSolenoid solenoidMainElevator;
     private DoubleSolenoid solenoidElevatorKickers;
     private Gyro gyroscope;
-    private double magnitude = 0;
-	private double direction = 0;
+    private double y = 0;
+	private double x = 0;
 	private double rotation = 0;
-	private double magnitudeDeadzone = .1;
-	private double directionDeadzone = .1;
+	private double xDeadzone = .1;
+	private double yDeadzone = .1;
 	private double rotationDeadzone = .1;
 	private int autonStepNum = 0;
 	private int autonMode = 0;
@@ -71,42 +71,65 @@ public class Robot extends SampleRobot
         //Loop
         while (isOperatorControl() && isEnabled()) 
         {
-        	//Controller Buttons
-        	if(xBox1.getRawButton(1)) {
-        		setElevator(true);
-        	}
-        	if(xBox1.getRawButton(2)) {
-        		setKickers(false);
-        	}
-        	if(xBox1.getRawButton(3)) {
-        		setKickers(true);
-        	}
-        	if(xBox1.getRawButton(4)) {
-        		setElevator(false);
-        	}
-        	if(xBox1.getRawButton(5)) {
-        		pickUpBox();
-        	}
-        	if(xBox1.getRawButton(6)) {
-        		putDownBox();
+        	/*
+        	 * Controller Buttons
+        	 */
+        	{
+        		//A
+        		if(xBox1.getRawButton(1)) {
+        			setElevator(true);
+        		}
+        		//B
+        		if(xBox1.getRawButton(2)) {
+        			setKickers(false);
+        		}
+        		//X
+        		if(xBox1.getRawButton(3)) {
+        			setKickers(true);
+        		}
+        		//Y
+        		if(xBox1.getRawButton(4)) {
+        			setElevator(false);
+        		}
+        		//L Top Trigger
+        		if(xBox1.getRawButton(5)) {
+        			pickUpBox();
+        		}
+        		//R Top Trigger
+        		if(xBox1.getRawButton(6)) {
+        			putDownBox();
+        		}
         	}
         	
-        	if(xBox1.getMagnitude() > magnitudeDeadzone || xBox1.getMagnitude() < -magnitudeDeadzone)
-        		magnitude = xBox1.getMagnitude();
-        	else
-        		magnitude = 0;
+        	/*
+        	 * Controller Axis
+        	 */
+        	{
+        		//X
+        		if(xBox1.getRawAxis(0) > xDeadzone || xBox1.getRawAxis(0) < -xDeadzone) {
+        			x = xBox1.getRawAxis(0);
+        		} 
+        		else {
+        			x = 0;
+        		}	
+        		//Y
+        		if(xBox1.getRawAxis(1) > yDeadzone || xBox1.getRawAxis(1) < -yDeadzone) {
+        			y = xBox1.getRawAxis(1);
+        		}
+        		else {
+        			y = 0;
+        		}      
+        		//Rotation
+        		if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > rotationDeadzone || xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -rotationDeadzone) {
+        			rotation = xBox1.getRawAxis(2) - xBox1.getRawAxis(3);
+        		}
+        		else {
+        			rotation = 0;
+        		}
+        	}
         	
-        	if(xBox1.getDirectionDegrees() > directionDeadzone || xBox1.getDirectionDegrees() < -directionDeadzone)
-        		direction = xBox1.getDirectionDegrees();
-        	else
-        		direction = 0;
+        	mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
         	
-        	if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > rotationDeadzone || xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -rotationDeadzone)
-        		rotation = xBox1.getRawAxis(2) - xBox1.getRawAxis(3);
-        	else
-        		rotation = 0;
-        	
-        	mecanumDrive.mecanumDrive_Polar(magnitude, direction , rotation);
             Timer.delay(0.005);		// wait for a motor update time
         }
     }
