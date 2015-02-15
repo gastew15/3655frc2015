@@ -12,6 +12,7 @@ public class RobotMap
     public static int driveForwardRightMotor = 3;
     public static int driveRearLeftMotor = 0;
     public static int driveRearRightMotor = 1;
+    public static int elevatorWinchMotor = 4;
     
     //DIO
 	public static int rotarEncoderForwardLeftA = 0;
