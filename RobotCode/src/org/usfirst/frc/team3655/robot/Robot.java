@@ -19,8 +19,10 @@ public class Robot extends SampleRobot
 {
     private RobotDrive mecanumDrive;
     private Joystick xBox1;
+    private Joystick xBox2;
     private DoubleSolenoid solenoidMainElevator;
     private DoubleSolenoid solenoidElevatorKickers;
+    private DoubleSolenoid solenoidBinLifter;
     private Victor elevatorWinch;
     private Gyro gyroscope;
     private double magnitude = 0;
@@ -43,6 +45,7 @@ public class Robot extends SampleRobot
     	mecanumDrive = new RobotDrive(RobotMap.driveForwardLeftMotor, RobotMap.driveRearLeftMotor, RobotMap.driveForwardRightMotor, RobotMap.driveRearRightMotor);
     	solenoidMainElevator = new DoubleSolenoid(RobotMap.solenoidElevator1, RobotMap.solenoidElevator2);
     	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
+    	solenoidBinLifter = new DoubleSolenoid(RobotMap.solenoidBinLifter1, RobotMap.solenoidBinLifter2);
     	elevatorWinch = new Victor(RobotMap.elevatorWinchMotor);
     	elevatorWinch.enableDeadbandElimination(true);
     	gyroscope = new Gyro(RobotMap.gyroInput);
@@ -52,6 +55,7 @@ public class Robot extends SampleRobot
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
         xBox1 = new Joystick(0);
+        xBox2 = new Joystick(1);
     }
 
     /**
@@ -120,6 +124,12 @@ public class Robot extends SampleRobot
         		else
         		{
         			elevatorWinch.set(0);
+        		}
+        		if(xBox1.getRawButton(9)){
+        			setBinLifter(true);	
+        		}
+        		if(xBox1.getRawButton(10)){
+        			setBinLifter(false);			
         		}
         	}
         	
@@ -200,6 +210,15 @@ public class Robot extends SampleRobot
     		solenoidMainElevator.set(DoubleSolenoid.Value.kForward);
     	} else {
     		solenoidMainElevator.set(DoubleSolenoid.Value.kReverse);
+    	}
+    }
+    
+    public void setBinLifter(boolean state)
+    {
+    	if(state) {
+    		solenoidBinLifter.set(DoubleSolenoid.Value.kForward);
+    	} else {
+    		solenoidBinLifter.set(DoubleSolenoid.Value.kReverse);
     	}
     }
 }
