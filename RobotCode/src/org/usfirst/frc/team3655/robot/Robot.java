@@ -22,7 +22,8 @@ public class Robot extends SampleRobot
     private Joystick xBox2;
     private DoubleSolenoid solenoidMainElevator;
     private DoubleSolenoid solenoidElevatorKickers;
-    private DoubleSolenoid solenoidBinLifter;
+    private DoubleSolenoid solenoidBinLifter1;
+    private DoubleSolenoid solenoidBinLifter2;
     private Victor elevatorWinch;
     private Gyro gyroscope;
     private double magnitude = 0;
@@ -30,6 +31,8 @@ public class Robot extends SampleRobot
 	private double rotation = 0;
 	private int autonStepNum = 0;
 	private int autonMode = 0;
+	private boolean xBox1Button9Pressed = false;
+	private boolean xBox1Button10Pressed = false;
 	
 	 // +- Deadzone on controller Axis
 	private double magnitudeDeadzone = .1;
@@ -45,7 +48,8 @@ public class Robot extends SampleRobot
     	mecanumDrive = new RobotDrive(RobotMap.driveForwardLeftMotor, RobotMap.driveRearLeftMotor, RobotMap.driveForwardRightMotor, RobotMap.driveRearRightMotor);
     	solenoidMainElevator = new DoubleSolenoid(RobotMap.solenoidElevator1, RobotMap.solenoidElevator2);
     	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
-    	solenoidBinLifter = new DoubleSolenoid(RobotMap.solenoidBinLifter1, RobotMap.solenoidBinLifter2);
+    	solenoidBinLifter1 = new DoubleSolenoid(RobotMap.solenoidBinLifter1_1, RobotMap.solenoidBinLifter1_2);
+    	solenoidBinLifter2 = new DoubleSolenoid(RobotMap.solenoidBinLifter2_1, RobotMap.solenoidBinLifter2_2);
     	elevatorWinch = new Victor(RobotMap.elevatorWinchMotor);
     	elevatorWinch.enableDeadbandElimination(true);
     	gyroscope = new Gyro(RobotMap.gyroInput);
@@ -104,15 +108,15 @@ public class Robot extends SampleRobot
         		//Y
         		if(xBox1.getRawButton(4)) {
         			setElevator(false);
-        		}
+        		}		
         		//L Top Trigger
         		if(xBox1.getRawButton(5)) {
         			pickUpBox();
-        		}
+        		}      		
         		//R Top Trigger
         		if(xBox1.getRawButton(6)) {
         			putDownBox();
-        		}
+        		}     		
         		//Winch Buttons (Start & Select)
         		if(xBox1.getRawButton(8)) {
         			elevatorWinch.set(.8);
@@ -124,12 +128,32 @@ public class Robot extends SampleRobot
         		else
         		{
         			elevatorWinch.set(0);
+        		}      		
+        		//Left Bin Lifter (Left JoyStick Button)
+        		if(xBox1.getRawButton(9) && !xBox1Button9Pressed){
+        			if(solenoidBinLifter1.get() == DoubleSolenoid.Value.kForward) {
+        				solenoidBinLifter1.set(DoubleSolenoid.Value.kReverse);
+        			} else {
+        				solenoidBinLifter1.set(DoubleSolenoid.Value.kForward);	
+        			}
+        			xBox1Button9Pressed = true;
         		}
-        		if(xBox1.getRawButton(9)){
-        			setBinLifter(true);	
+        		else if(!xBox1.getRawButton(9))
+        		{
+        			xBox1Button9Pressed = false;
+        		}       		
+        		//Right Bin Lifter (Right JoyStick Button)
+        		if(xBox1.getRawButton(10) && !xBox1Button10Pressed){
+        			if(solenoidBinLifter2.get() == DoubleSolenoid.Value.kForward) {
+        				solenoidBinLifter2.set(DoubleSolenoid.Value.kReverse);
+        			} else {
+        				solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);	
+        			}
+        			xBox1Button10Pressed = true;
         		}
-        		if(xBox1.getRawButton(10)){
-        			setBinLifter(false);			
+        		else if(!xBox1.getRawButton(10))
+        		{
+        			xBox1Button10Pressed = false;
         		}
         	}
         	
@@ -210,15 +234,6 @@ public class Robot extends SampleRobot
     		solenoidMainElevator.set(DoubleSolenoid.Value.kForward);
     	} else {
     		solenoidMainElevator.set(DoubleSolenoid.Value.kReverse);
-    	}
-    }
-    
-    public void setBinLifter(boolean state)
-    {
-    	if(state) {
-    		solenoidBinLifter.set(DoubleSolenoid.Value.kForward);
-    	} else {
-    		solenoidBinLifter.set(DoubleSolenoid.Value.kReverse);
     	}
     }
 }

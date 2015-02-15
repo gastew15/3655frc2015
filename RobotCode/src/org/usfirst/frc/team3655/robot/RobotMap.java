@@ -31,7 +31,9 @@ public class RobotMap
 	public static int solenoidElevator1 = 0;
 	public static int solenoidElevator2 = 1;
 	public static int solenoidElevatorKicker1 = 2;
-	public static int solenoidElevatorKicker2= 3;
-	public static int solenoidBinLifter1= 4;
-	public static int solenoidBinLifter2= 5;
+	public static int solenoidElevatorKicker2 = 3;
+	public static int solenoidBinLifter1_1 = 4;
+	public static int solenoidBinLifter1_2 = 5;
+	public static int solenoidBinLifter2_1 = 6;
+	public static int solenoidBinLifter2_2 = 7;
 }
