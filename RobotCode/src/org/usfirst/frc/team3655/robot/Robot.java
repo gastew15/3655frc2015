@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.Compressor;
 
 /**
  * Main Robot Class
@@ -24,10 +25,12 @@ public class Robot extends SampleRobot
     private DoubleSolenoid solenoidElevatorKickers;
     private DoubleSolenoid solenoidBinLifter1;
     private DoubleSolenoid solenoidBinLifter2;
+    private Compressor compressor;
     private Victor elevatorWinch;
     private Gyro gyroscope;
     private double magnitude = 0;
 	private double direction = 0;
+	private double x = 0, y = 0;
 	private double rotation = 0;
 	private int autonStepNum = 0;
 	private int autonMode = 0;
@@ -53,11 +56,12 @@ public class Robot extends SampleRobot
     	elevatorWinch = new Victor(RobotMap.elevatorWinchMotor);
     	elevatorWinch.enableDeadbandElimination(true);
     	gyroscope = new Gyro(RobotMap.gyroInput);
+    	compressor = new Compressor();
     	mecanumDrive.setExpiration(0.1);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, true);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
-    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, false);
+    	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
         xBox1 = new Joystick(0);
         xBox2 = new Joystick(1);
     }
@@ -67,14 +71,26 @@ public class Robot extends SampleRobot
      */
     public void autonomous() 
     {
-    	switch(autonStepNum)
-    	{
-    		case 0:
-    		//Reset Variables For Auton Here
-    		break;
-    		
-    		//Put in additonal steps here
+    	if(!compressor.enabled()) {
+    		compressor.start();
     	}
+    	
+    	while(isAutonomous() && isEnabled())
+    	{
+    		switch(autonStepNum)
+    		{
+    			case 0:
+    				//Reset Variables For Auton Here
+    				break;
+    		
+    				//Put in additonal steps here
+    		}
+    	}
+    	
+    	if(!isEnabled())
+        {
+        	compressor.stop();
+        }
     }
 
     /**
@@ -85,6 +101,9 @@ public class Robot extends SampleRobot
     	//Intilization
         mecanumDrive.setSafetyEnabled(true);
         elevatorWinch.setSafetyEnabled(true);
+        if(!compressor.enabled()) {
+    		compressor.start();
+        }
         
         //Loop
         while (isOperatorControl() && isEnabled()) 
@@ -161,6 +180,7 @@ public class Robot extends SampleRobot
         	 * Controller Axis
         	 */
         	{
+        		/*
         		//X
         		if(xBox1.getMagnitude() > magnitudeDeadzone || xBox1.getMagnitude() < -magnitudeDeadzone) {
         			magnitude = xBox1.getMagnitude() * magnitudeLimiter;
@@ -174,7 +194,24 @@ public class Robot extends SampleRobot
         		}
         		else {
         			direction = 0;
-        		}      
+        		}   
+        		*/   
+        		
+        		//Y
+        		if(xBox1.getY() > magnitudeDeadzone || xBox1.getY() < -magnitudeDeadzone) {
+        			x = xBox1.getY() * magnitudeLimiter;
+        		} 
+        		else {
+        			x = 0;
+        		}	
+        		//X
+        		if(xBox1.getX() > directionDeadzone || xBox1.getX() < -directionDeadzone) {
+        			y = xBox1.getX() * directionLimiter;
+        		}
+        		else {
+        			y = 0;
+        		} 
+        		
         		//Rotation
         		if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > rotationDeadzone || xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -rotationDeadzone) {
         			rotation = (xBox1.getRawAxis(2) - xBox1.getRawAxis(3)) * rotationLimiter;
@@ -182,12 +219,18 @@ public class Robot extends SampleRobot
         		else {
         			rotation = 0;
         		}
+        		
         	}
         	
-        	mecanumDrive.mecanumDrive_Polar(magnitude, direction, rotation);
-        	//mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+        	//mecanumDrive.mecanumDrive_Polar(magnitude, direction, rotation);
+        	mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
         	
             Timer.delay(0.005);		// wait for a motor update time
+        }
+        
+        if(!isEnabled())
+        {
+        	compressor.stop();
         }
     }
 
