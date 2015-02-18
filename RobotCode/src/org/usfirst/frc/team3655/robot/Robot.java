@@ -1,6 +1,4 @@
-
 package org.usfirst.frc.team3655.robot;
-
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Gyro;
@@ -10,17 +8,21 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Main Robot Class
- * @author G. Stewart
- * @version 1/13/2015
+ * @author G. Stewart & Will Reid
+ * @version 2/18/2015
  */
 public class Robot extends SampleRobot
 {
-    private RobotDrive mecanumDrive;
-    private Joystick xBox1;
+	//Input Devices
+	private Joystick xBox1;
     private Joystick xBox2;
+    
+    //SubSystems
+    private RobotDrive mecanumDrive;
     private DoubleSolenoid solenoidMainElevator;
     private DoubleSolenoid solenoidElevatorKickers;
     private DoubleSolenoid solenoidBinLifter1;
@@ -28,9 +30,10 @@ public class Robot extends SampleRobot
     private Compressor compressor;
     private Victor elevatorWinch;
     private Gyro gyroscope;
-    private double magnitude = 0;
-	private double direction = 0;
-	private double x = 0, y = 0;
+    
+    //Variables
+	private double x = 0;
+	private double y = 0;
 	private double rotation = 0;
 	private int autonStepNum = 0;
 	private int autonMode = 0;
@@ -38,43 +41,56 @@ public class Robot extends SampleRobot
 	private boolean xBox1Button10Pressed = false;
 	
 	 // +- Deadzone on controller Axis
-	private double magnitudeDeadzone = .1;
-	private double directionDeadzone = .1;
+	private double yDeadzone = .1;
+	private double xDeadzone = .1;
 	private double rotationDeadzone = .1;
+	
 	 // 0 - 1 for Motor Output = Input * limiter
-	private double magnitudeLimiter = 1; 
-	private double directionLimiter = 1; 
+	private double yLimiter = 1; 
+	private double xLimiter = 1; 
 	private double rotationLimiter = 1; 
 
     public Robot() 
     {
+    	//JoySticks
+    	xBox1 = new Joystick(0);
+        xBox2 = new Joystick(1);
+    	
+    	//Drive
     	mecanumDrive = new RobotDrive(RobotMap.driveForwardLeftMotor, RobotMap.driveRearLeftMotor, RobotMap.driveForwardRightMotor, RobotMap.driveRearRightMotor);
-    	solenoidMainElevator = new DoubleSolenoid(RobotMap.solenoidElevator1, RobotMap.solenoidElevator2);
-    	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
-    	solenoidBinLifter1 = new DoubleSolenoid(RobotMap.solenoidBinLifter1_1, RobotMap.solenoidBinLifter1_2);
-    	solenoidBinLifter2 = new DoubleSolenoid(RobotMap.solenoidBinLifter2_1, RobotMap.solenoidBinLifter2_2);
-    	elevatorWinch = new Victor(RobotMap.elevatorWinchMotor);
-    	elevatorWinch.enableDeadbandElimination(true);
-    	gyroscope = new Gyro(RobotMap.gyroInput);
-    	compressor = new Compressor();
     	mecanumDrive.setExpiration(0.1);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontLeft, false);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearLeft, false);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
-        xBox1 = new Joystick(0);
-        xBox2 = new Joystick(1);
+    	
+    	//Motors
+    	elevatorWinch = new Victor(RobotMap.elevatorWinchMotor);
+    	elevatorWinch.enableDeadbandElimination(true);
+    	
+    	//Solenoids
+    	solenoidMainElevator = new DoubleSolenoid(RobotMap.solenoidElevator1, RobotMap.solenoidElevator2);
+    	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
+    	solenoidBinLifter1 = new DoubleSolenoid(RobotMap.solenoidBinLifter1_1, RobotMap.solenoidBinLifter1_2);
+    	solenoidBinLifter2 = new DoubleSolenoid(RobotMap.solenoidBinLifter2_1, RobotMap.solenoidBinLifter2_2);
+    	compressor = new Compressor();
+    	
+    	//Inputs
+    	gyroscope = new Gyro(RobotMap.gyroInput);
     }
 
     /**
      * Auton Code
      */
-    public void autonomous() 
+	public void autonomous() 
     {
     	if(!compressor.enabled()) {
     		compressor.start();
     	}
     	
+    	autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
+    	
+    	//Main Auton Loop
     	while(isAutonomous() && isEnabled())
     	{
     		switch(autonStepNum)
@@ -82,8 +98,17 @@ public class Robot extends SampleRobot
     			case 0:
     				//Reset Variables For Auton Here
     				break;
-    		
-    				//Put in additonal steps here
+    			case 1:
+    				//Example
+    				if(autonMode == 1) {
+    					//Do One Thing
+    				} 
+    				else if(autonMode == 2) {
+    					//Do Another
+    				}
+    				break;
+    				
+    			//Put in additonal steps here
     		}
     	}
     	
@@ -107,7 +132,7 @@ public class Robot extends SampleRobot
         
         //Loop
         while (isOperatorControl() && isEnabled()) 
-        {
+        {        	 	
         	/*
         	 * Controller Buttons
         	 */
@@ -180,33 +205,17 @@ public class Robot extends SampleRobot
         	 * Controller Axis
         	 */
         	{
-        		/*
-        		//X
-        		if(xBox1.getMagnitude() > magnitudeDeadzone || xBox1.getMagnitude() < -magnitudeDeadzone) {
-        			magnitude = xBox1.getMagnitude() * magnitudeLimiter;
-        		} 
-        		else {
-        			magnitude = 0;
-        		}	
-        		//Y
-        		if(xBox1.getDirectionDegrees() > directionDeadzone || xBox1.getDirectionDegrees() < -directionDeadzone) {
-        			direction = xBox1.getDirectionDegrees() * directionLimiter;
-        		}
-        		else {
-        			direction = 0;
-        		}   
-        		*/   
         		
-        		//Y
-        		if(xBox1.getY() > magnitudeDeadzone || xBox1.getY() < -magnitudeDeadzone) {
-        			x = xBox1.getY() * magnitudeLimiter;
+        		//X
+        		if(xBox1.getY() > xDeadzone || xBox1.getY() < -xDeadzone) {
+        			x = xBox1.getY() * xLimiter;
         		} 
         		else {
         			x = 0;
         		}	
-        		//X
-        		if(xBox1.getX() > directionDeadzone || xBox1.getX() < -directionDeadzone) {
-        			y = xBox1.getX() * directionLimiter;
+        		//Y
+        		if(xBox1.getX() > yDeadzone || xBox1.getX() < -yDeadzone) {
+        			y = xBox1.getX() * yLimiter;
         		}
         		else {
         			y = 0;
@@ -221,9 +230,11 @@ public class Robot extends SampleRobot
         		}
         		
         	}
-        	
-        	//mecanumDrive.mecanumDrive_Polar(magnitude, direction, rotation);
+
         	mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+        	
+        	//DashBoard
+        	SmartDashboard.putNumber("Air Pressure", compressor.getCompressorCurrent());
         	
             Timer.delay(0.005);		// wait for a motor update time
         }
