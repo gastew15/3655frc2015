@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Main Robot Class
@@ -84,11 +84,9 @@ public class Robot extends SampleRobot
      */
 	public void autonomous() 
     {
-    	if(!compressor.enabled()) {
     		compressor.start();
-    	}
     	
-    	autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
+    	//autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
     	
     	//Main Auton Loop
     	while(isAutonomous() && isEnabled())
@@ -111,11 +109,6 @@ public class Robot extends SampleRobot
     			//Put in additonal steps here
     		}
     	}
-    	
-    	if(!isEnabled())
-        {
-        	compressor.stop();
-        }
     }
 
     /**
@@ -126,9 +119,7 @@ public class Robot extends SampleRobot
     	//Intilization
         mecanumDrive.setSafetyEnabled(true);
         elevatorWinch.setSafetyEnabled(true);
-        if(!compressor.enabled()) {
     		compressor.start();
-        }
         
         //Loop
         while (isOperatorControl() && isEnabled()) 
@@ -234,14 +225,9 @@ public class Robot extends SampleRobot
         	mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
         	
         	//DashBoard
-        	SmartDashboard.putNumber("Air Pressure", compressor.getCompressorCurrent());
+        	//SmartDashboard.putNumber("Air Pressure", compressor.getCompressorCurrent());
         	
             Timer.delay(0.005);		// wait for a motor update time
-        }
-        
-        if(!isEnabled())
-        {
-        	compressor.stop();
         }
     }
 
