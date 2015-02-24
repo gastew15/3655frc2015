@@ -1,14 +1,14 @@
 package org.usfirst.frc.team3655.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.Gyro;
+//import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
-//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Main Robot Class
@@ -29,7 +29,7 @@ public class Robot extends SampleRobot
     private DoubleSolenoid solenoidBinLifter2;
     private Compressor compressor;
     private Victor elevatorWinch;
-    private Gyro gyroscope;
+    //private Gyro gyroscope;
     
     //Variables
 	private double x = 0;
@@ -37,8 +37,8 @@ public class Robot extends SampleRobot
 	private double rotation = 0;
 	private int autonStepNum = 0;
 	private int autonMode = 0;
-	private boolean xBox1Button9Pressed = false;
-	private boolean xBox1Button10Pressed = false;
+	private boolean xBox2Button9Pressed = false;
+	private boolean xBox2Button10Pressed = false;
 	
 	 // +- Deadzone on controller Axis
 	private double yDeadzone = .1;
@@ -46,9 +46,9 @@ public class Robot extends SampleRobot
 	private double rotationDeadzone = .1;
 	
 	 // 0 - 1 for Motor Output = Input * limiter
-	private double yLimiter = 1; 
-	private double xLimiter = 1; 
-	private double rotationLimiter = 1; 
+	private double yLimiter = .9; 
+	private double xLimiter = .9; 
+	private double rotationLimiter = .9; 
 
     public Robot() 
     {
@@ -74,19 +74,20 @@ public class Robot extends SampleRobot
     	solenoidBinLifter1 = new DoubleSolenoid(RobotMap.solenoidBinLifter1_1, RobotMap.solenoidBinLifter1_2);
     	solenoidBinLifter2 = new DoubleSolenoid(RobotMap.solenoidBinLifter2_1, RobotMap.solenoidBinLifter2_2);
     	compressor = new Compressor();
+    	compressor.start();
     	
+    	setElevator(false);
+    	setKickers(false);
     	//Inputs
-    	gyroscope = new Gyro(RobotMap.gyroInput);
+    	//gyroscope = new Gyro(RobotMap.gyroInput);
     }
 
     /**
      * Auton Code
      */
 	public void autonomous() 
-    {
-    		compressor.start();
-    	
-    	//autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
+    {    	
+    	autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
     	
     	//Main Auton Loop
     	while(isAutonomous() && isEnabled())
@@ -94,9 +95,19 @@ public class Robot extends SampleRobot
     		switch(autonStepNum)
     		{
     			case 0:
-    				//Reset Variables For Auton Here
+    				//pickUpBox();
+					//Timer.delay(1.2);
+					autonStepNum++;
     				break;
     			case 1:
+    				y = 0;
+    				x = .7 * - 1;
+    				rotation = 0;
+    				//mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    				Timer.delay(.5);
+    				autonStepNum++;
+					break;
+    			case 2:
     				//Example
     				if(autonMode == 1) {
     					//Do One Thing
@@ -119,7 +130,6 @@ public class Robot extends SampleRobot
     	//Intilization
         mecanumDrive.setSafetyEnabled(true);
         elevatorWinch.setSafetyEnabled(true);
-    		compressor.start();
         
         //Loop
         while (isOperatorControl() && isEnabled()) 
@@ -129,34 +139,34 @@ public class Robot extends SampleRobot
         	 */
         	{
         		//A
-        		if(xBox1.getRawButton(1)) {
+        		if(xBox2.getRawButton(1)) {
         			setElevator(true);
         		}
         		//B
-        		if(xBox1.getRawButton(2)) {
+        		if(xBox2.getRawButton(2)) {
         			setKickers(false);
         		}
         		//X
-        		if(xBox1.getRawButton(3)) {
+        		if(xBox2.getRawButton(3)) {
         			setKickers(true);
         		}
         		//Y
-        		if(xBox1.getRawButton(4)) {
+        		if(xBox2.getRawButton(4)) {
         			setElevator(false);
         		}		
         		//L Top Trigger
-        		if(xBox1.getRawButton(5)) {
-        			pickUpBox();
+        		if(xBox2.getRawButton(5)) {
+        			putDownBox();       			
         		}      		
         		//R Top Trigger
-        		if(xBox1.getRawButton(6)) {
-        			putDownBox();
+        		if(xBox2.getRawButton(6)) {
+        			pickUpBox();
         		}     		
         		//Winch Buttons (Start & Select)
-        		if(xBox1.getRawButton(8)) {
+        		if(xBox2.getRawButton(8)) {
         			elevatorWinch.set(.8);
         		}
-        		else if(xBox1.getRawButton(7))
+        		else if(xBox2.getRawButton(7))
         		{
         			elevatorWinch.set(-.8);
         		}
@@ -165,30 +175,30 @@ public class Robot extends SampleRobot
         			elevatorWinch.set(0);
         		}      		
         		//Left Bin Lifter (Left JoyStick Button)
-        		if(xBox1.getRawButton(9) && !xBox1Button9Pressed){
+        		if(xBox2.getRawButton(9) && !xBox2Button9Pressed){
         			if(solenoidBinLifter1.get() == DoubleSolenoid.Value.kForward) {
         				solenoidBinLifter1.set(DoubleSolenoid.Value.kReverse);
         			} else {
         				solenoidBinLifter1.set(DoubleSolenoid.Value.kForward);	
         			}
-        			xBox1Button9Pressed = true;
+        			xBox2Button9Pressed = true;
         		}
-        		else if(!xBox1.getRawButton(9))
+        		else if(!xBox2.getRawButton(9))
         		{
-        			xBox1Button9Pressed = false;
+        			xBox2Button9Pressed = false;
         		}       		
         		//Right Bin Lifter (Right JoyStick Button)
-        		if(xBox1.getRawButton(10) && !xBox1Button10Pressed){
+        		if(xBox2.getRawButton(10) && !xBox2Button10Pressed){
         			if(solenoidBinLifter2.get() == DoubleSolenoid.Value.kForward) {
         				solenoidBinLifter2.set(DoubleSolenoid.Value.kReverse);
         			} else {
         				solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);	
         			}
-        			xBox1Button10Pressed = true;
+        			xBox2Button10Pressed = true;
         		}
-        		else if(!xBox1.getRawButton(10))
+        		else if(!xBox2.getRawButton(10))
         		{
-        			xBox1Button10Pressed = false;
+        			xBox2Button10Pressed = false;
         		}
         	}
         	
@@ -198,15 +208,15 @@ public class Robot extends SampleRobot
         	{
         		
         		//X
-        		if(xBox1.getY() > xDeadzone || xBox1.getY() < -xDeadzone) {
-        			x = xBox1.getY() * xLimiter;
+        		if(xBox1.getRawAxis(5) > xDeadzone || xBox1.getRawAxis(5) < -xDeadzone) {
+        			x = xBox1.getRawAxis(5) * xLimiter * -1;
         		} 
         		else {
         			x = 0;
         		}	
         		//Y
-        		if(xBox1.getX() > yDeadzone || xBox1.getX() < -yDeadzone) {
-        			y = xBox1.getX() * yLimiter;
+        		if(xBox1.getRawAxis(4) > yDeadzone || xBox1.getRawAxis(4) < -yDeadzone) {
+        			y = xBox1.getRawAxis(4) * yLimiter;
         		}
         		else {
         			y = 0;
@@ -214,7 +224,7 @@ public class Robot extends SampleRobot
         		
         		//Rotation
         		if(xBox1.getRawAxis(2) - xBox1.getRawAxis(3) > rotationDeadzone || xBox1.getRawAxis(2) - xBox1.getRawAxis(3) < -rotationDeadzone) {
-        			rotation = (xBox1.getRawAxis(2) - xBox1.getRawAxis(3)) * rotationLimiter;
+        			rotation = (xBox1.getRawAxis(2) - xBox1.getRawAxis(3)) * rotationLimiter * -1;
         		}
         		else {
         			rotation = 0;
@@ -225,7 +235,7 @@ public class Robot extends SampleRobot
         	mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
         	
         	//DashBoard
-        	//SmartDashboard.putNumber("Air Pressure", compressor.getCompressorCurrent());
+        	SmartDashboard.putNumber("Air Pressure", compressor.getCompressorCurrent());
         	
             Timer.delay(0.005);		// wait for a motor update time
         }
@@ -242,20 +252,20 @@ public class Robot extends SampleRobot
     public void putDownBox()
     {
     	setElevator(true);
-    	Timer.delay(.4);
+    	Timer.delay(2.0);
     	setKickers(false);
-    	Timer.delay(1.2);
+    	Timer.delay(.75);
     	setElevator(false);
     }
     
     public void pickUpBox()
     {
     	setElevator(true);
-    	Timer.delay(0.1);
+    	Timer.delay(0.5);
     	setKickers(false);
-    	Timer.delay(0.75);
+    	Timer.delay(1.3);
     	setKickers(true);
-    	Timer.delay(1);
+    	Timer.delay(.75);
     	setElevator(false);
     }
     
