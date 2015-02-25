@@ -90,111 +90,119 @@ public class Robot extends SampleRobot
 		
 		boolean isTripped;
 		int counter;
-		//boolean craptripped = false;
-		//while (isAutonomous() && isEnabled()) 
+
+		//Step 1: Pick Up Can
+		counter = 0;
+		isTripped = false;
+		while(counter < 200 && isEnabled() && isAutonomous())
 		{
-			//if(!craptripped)
+			if(!isTripped)
 			{
-		//1st Step
-			counter = 0;
-			isTripped = false;
-			while(counter < 200 && isEnabled() && isAutonomous())
-			{
-				if(!isTripped)
-				{
-					solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);
-					isTripped = true;
-				}
-				Timer.delay(.005);
-				counter++;
+				solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);
+				isTripped = true;
 			}
-    				
-    	//2nd Step
-    		counter = 0;
-    		isTripped = false;
-    		while(counter < 300  && isEnabled() && isAutonomous())
-    		{
-    			y = 0;
-    			x = -.7;
-    			rotation = .05;
-    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    			Timer.delay(.005);
-    			counter++;
-    			//200 ticks in a second
-    		}
-    		
-    	//3rd Step	
-    		counter = 0;
-    		isTripped = false;
-    		while(counter < 30  && isEnabled() && isAutonomous())
-    		{
-    			y = 0;
-    			x = 0;
-    			rotation = .75;
-    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    			Timer.delay(.005);
-    			counter++;
-    			//200 ticks in a second
-    		}
-    		
-    	//4th Step	
-    		counter = 0;
-    		isTripped = false;
-    		while(counter < 223  && isEnabled() && isAutonomous())
-    		{
-    			y = .75;
-    			x = 0;
-    			rotation = 0;
-    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    			Timer.delay(.005);
-    			counter++;
-    			//200 ticks in a second
-    		}
-    		
-    	//5th Step	
-    		counter = 0;
-    		isTripped = false;
-    		while(counter < 345  && isEnabled() && isAutonomous())
-    		{
-    			y = 0;
-    			x = .7;
-    			rotation = .05;
-    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    			Timer.delay(.005);
-    			counter++;
-    			//200 ticks in a second
-    		}
-    		
-    	//6th Step	
-    		counter = 0;
-			isTripped = false;
-			while(counter < 100  && isEnabled() && isAutonomous())
-			{
-				if(!isTripped)
-				{
-					pickUpBox();
-					isTripped = true;
-				}
-				Timer.delay(.005);
-				counter++;
-			}
-    		
-    	//7th Step
-    		counter = 0;
-    		isTripped = false;
-    		while(counter < 300  && isEnabled() && isAutonomous())
-    		{
-    			y = 0;
-    			x = .7;
-    			rotation = .05;
-    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    			Timer.delay(.005);
-    			counter++;
-    			//200 ticks in a second
-    		}
-    		
-			}	
+			Timer.delay(.005);
+			counter++;
+			//200 ticks in a second
 		}
+    				
+    	//Step 2: Drive backward
+    	counter = 0;
+    	isTripped = false;
+    	while(counter < 300  && isEnabled() && isAutonomous())
+    	{
+    		y = 0;
+    		x = -.7;
+    		rotation = .05;
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    		Timer.delay(.005);
+    		counter++;
+    		//200 ticks in a second
+    	}
+    		
+    	//Step 3: Rotate Left Correction	
+    	counter = 0;
+    	isTripped = false;
+    	while(counter < 30  && isEnabled() && isAutonomous())
+    	{
+    		y = 0;
+    		x = 0;
+    		rotation = .75;
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    		Timer.delay(.005);
+    		counter++;
+    		//200 ticks in a second
+    	}
+    		
+    	//Step 4: Drive Right
+    	counter = 0;
+    	isTripped = false;
+    	while(counter < 223  && isEnabled() && isAutonomous())
+    	{
+    		y = .75;
+    		x = 0;
+    		rotation = 0;
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    		Timer.delay(.005);
+    		counter++;
+    		//200 ticks in a second
+    	}
+    		
+    	//Step 5: Drive Forward
+    	counter = 0;
+    	isTripped = false;
+    	while(counter < 345  && isEnabled() && isAutonomous())
+    	{
+    		y = 0;
+    		x = .7;
+    		rotation = .05;
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    		Timer.delay(.005);
+    		counter++;
+    		//200 ticks in a second
+    	}
+    		
+    	//Step 6: Pick Up Box
+    	counter = 0;
+		isTripped = false;
+		while(counter < 100  && isEnabled() && isAutonomous())
+		{
+			if(!isTripped)
+			{
+				pickUpBox();
+				isTripped = true;
+			}
+			Timer.delay(.005);
+			counter++;
+		}
+			
+		//Step 7: Rotate Left Correction
+    	counter = 0;
+    	isTripped = false;
+    	while(counter < 30  && isEnabled() && isAutonomous())
+    	{
+    		y = 0;
+    		x = 0;
+    		rotation = .75;
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    		Timer.delay(.005);
+    		counter++;
+    		//200 ticks in a second
+    	}
+    		
+    	//Step 8: Drive Forward
+    	counter = 0;
+    	isTripped = false;
+    	while(counter < 300  && isEnabled() && isAutonomous())
+    	{
+    		y = 0;
+    		x = .7;
+    		rotation = .05;
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    		Timer.delay(.005);
+    		counter++;
+    		//200 ticks in a second
+    	}    		
     }
 
     /**
@@ -309,12 +317,12 @@ public class Robot extends SampleRobot
         	boolean binLiftLeft;
         	boolean binLiftRight;
         	
-        	if(solenoidBinLifter1.get() == DoubleSolenoid.Value.kForward)
+        	if(solenoidBinLifter1.get().equals(DoubleSolenoid.Value.kForward))
         		binLiftLeft = true;
         	else
         		binLiftLeft = false;
 
-        	if(solenoidBinLifter2.get() == DoubleSolenoid.Value.kForward)
+        	if(solenoidBinLifter2.get().equals(DoubleSolenoid.Value.kForward))
         		binLiftRight = true;
         	else
         		binLiftRight = false;
