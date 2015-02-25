@@ -35,7 +35,6 @@ public class Robot extends SampleRobot
 	private double x = 0;
 	private double y = 0;
 	private double rotation = 0;
-	private int autonStepNum = 0;
 	private int autonMode = 0;
 	private boolean xBox2Button9Pressed = false;
 	private boolean xBox2Button10Pressed = false;
@@ -75,7 +74,7 @@ public class Robot extends SampleRobot
     	solenoidBinLifter2 = new DoubleSolenoid(RobotMap.solenoidBinLifter2_1, RobotMap.solenoidBinLifter2_2);
     	compressor = new Compressor();
     	compressor.start();
-    	
+    	solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);	
     	setElevator(false);
     	setKickers(false);
     	//Inputs
@@ -87,45 +86,121 @@ public class Robot extends SampleRobot
      */
 	public void autonomous() 
     {    	
-    	autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
-    	
-    	//Main Auton Loop
-    	while(isAutonomous() && isEnabled())
-    	{
-    		switch(autonStepNum)
-    		{
-    			case 0:
-    				//pickUpBox();
-					//Timer.delay(1.2);
-					autonStepNum++;
-    				break;
-    			case 1:
-    				y = 0;
-    				x = .7 * - 1;
-    				rotation = 0;
-    				//mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    				Timer.delay(.5);
-    				autonStepNum++;
-					break;
-    			case 2:
-    				//Example
-    				if(autonMode == 1) {
-    					//Do One Thing
-    				} 
-    				else if(autonMode == 2) {
-    					//Do Another
-    				}
-    				break;
+    	//autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
+		
+		boolean isTripped;
+		int counter;
+		//boolean craptripped = false;
+		//while (isAutonomous() && isEnabled()) 
+		{
+			//if(!craptripped)
+			{
+		//1st Step
+			counter = 0;
+			isTripped = false;
+			while(counter < 200 && isEnabled() && isAutonomous())
+			{
+				if(!isTripped)
+				{
+					solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);
+					isTripped = true;
+				}
+				Timer.delay(.005);
+				counter++;
+			}
     				
-    			//Put in additonal steps here
+    	//2nd Step
+    		counter = 0;
+    		isTripped = false;
+    		while(counter < 300  && isEnabled() && isAutonomous())
+    		{
+    			y = 0;
+    			x = -.7;
+    			rotation = .05;
+    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    			Timer.delay(.005);
+    			counter++;
+    			//200 ticks in a second
     		}
-    	}
+    		
+    	//3rd Step	
+    		counter = 0;
+    		isTripped = false;
+    		while(counter < 30  && isEnabled() && isAutonomous())
+    		{
+    			y = 0;
+    			x = 0;
+    			rotation = .75;
+    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    			Timer.delay(.005);
+    			counter++;
+    			//200 ticks in a second
+    		}
+    		
+    	//4th Step	
+    		counter = 0;
+    		isTripped = false;
+    		while(counter < 223  && isEnabled() && isAutonomous())
+    		{
+    			y = .75;
+    			x = 0;
+    			rotation = 0;
+    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    			Timer.delay(.005);
+    			counter++;
+    			//200 ticks in a second
+    		}
+    		
+    	//5th Step	
+    		counter = 0;
+    		isTripped = false;
+    		while(counter < 345  && isEnabled() && isAutonomous())
+    		{
+    			y = 0;
+    			x = .7;
+    			rotation = .05;
+    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    			Timer.delay(.005);
+    			counter++;
+    			//200 ticks in a second
+    		}
+    		
+    	//6th Step	
+    		counter = 0;
+			isTripped = false;
+			while(counter < 100  && isEnabled() && isAutonomous())
+			{
+				if(!isTripped)
+				{
+					pickUpBox();
+					isTripped = true;
+				}
+				Timer.delay(.005);
+				counter++;
+			}
+    		
+    	//7th Step
+    		counter = 0;
+    		isTripped = false;
+    		while(counter < 300  && isEnabled() && isAutonomous())
+    		{
+    			y = 0;
+    			x = .7;
+    			rotation = .05;
+    			mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    			Timer.delay(.005);
+    			counter++;
+    			//200 ticks in a second
+    		}
+    		
+			}	
+		}
     }
 
     /**
      * TeleOp Control
      */
-    public void operatorControl() 
+	public void operatorControl() 
     {
     	//Intilization
         mecanumDrive.setSafetyEnabled(true);
@@ -135,7 +210,7 @@ public class Robot extends SampleRobot
         while (isOperatorControl() && isEnabled()) 
         {        	 	
         	/*
-        	 * Controller Buttons
+        	 * Controller Buttons  (Xbox Controller 2)
         	 */
         	{
         		//A
@@ -203,10 +278,9 @@ public class Robot extends SampleRobot
         	}
         	
         	/*
-        	 * Controller Axis
+        	 * Controller Axis (Xbox Controller 1)
         	 */
-        	{
-        		
+        	{	
         		//X
         		if(xBox1.getRawAxis(5) > xDeadzone || xBox1.getRawAxis(5) < -xDeadzone) {
         			x = xBox1.getRawAxis(5) * xLimiter * -1;
@@ -228,16 +302,34 @@ public class Robot extends SampleRobot
         		}
         		else {
         			rotation = 0;
-        		}
-        		
+        		}     		
         	}
+        	
+        	//Dashboard Writing
+        	boolean binLiftLeft;
+        	boolean binLiftRight;
+        	
+        	if(solenoidBinLifter1.get() == DoubleSolenoid.Value.kForward)
+        		binLiftLeft = true;
+        	else
+        		binLiftLeft = false;
 
+        	if(solenoidBinLifter2.get() == DoubleSolenoid.Value.kForward)
+        		binLiftRight = true;
+        	else
+        		binLiftRight = false;
+        	
+        	SmartDashboard.putBoolean("BinLifer Left", binLiftLeft);
+        	SmartDashboard.putBoolean("BinLifer Right", binLiftRight);
+        	SmartDashboard.putNumber("Y", xBox1.getRawAxis(5) * -1);
+        	SmartDashboard.putNumber("X", xBox1.getRawAxis(4));
+        	SmartDashboard.putNumber("Rotation", xBox1.getRawAxis(2) - xBox1.getRawAxis(3) * -1);
+        	
+        	//Drive Base
         	mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
         	
-        	//DashBoard
-        	SmartDashboard.putNumber("Air Pressure", compressor.getCompressorCurrent());
-        	
-            Timer.delay(0.005);		// wait for a motor update time
+        	//Tick Delay (200 times a second)
+            Timer.delay(0.005);		
         }
     }
 
