@@ -91,32 +91,34 @@ public class Robot extends SampleRobot
 		boolean isTripped;
 		int counter;
 
+		//Single Acuation Command
 		//Step 1: Pick Up Can
-		counter = 0;
-		isTripped = false;
-		while(counter < 200 && isEnabled() && isAutonomous())
+		counter = 0;  					//Leave Default
+		isTripped = false;				//Leave Default
+		while(counter < 200 && isEnabled() && isAutonomous()) //Count < timeTillNextStep (In Ticks, 200 ticks in a second) 	&& (Leave Default) && (LeaveDefault)
 		{
-			if(!isTripped)
+			if(!isTripped) //Leave Defualt
 			{
-				solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);
-				isTripped = true;
+				solenoidBinLifter2.set(DoubleSolenoid.Value.kForward); //Action to perform goes here
+				isTripped = true; //Leave Default
 			}
-			Timer.delay(.005);
-			counter++;
+			Timer.delay(.005); //Leave Default
+			counter++; //Leave Default
 			//200 ticks in a second
 		}
-    				
+    	
+		//Constant Running Command
     	//Step 2: Drive backward
-    	counter = 0;
-    	isTripped = false;
-    	while(counter < 300  && isEnabled() && isAutonomous())
+    	counter = 0;		//Leave Default
+    	isTripped = false;	//Leave Default
+    	while(counter < 300  && isEnabled() && isAutonomous())  //Count < timeTillNextStep (In Ticks, 200 ticks in a second) 	&& (Leave Default) && (LeaveDefault)
     	{
-    		y = 0;
-    		x = -.7;
-    		rotation = .05;
-    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    		Timer.delay(.005);
-    		counter++;
+    		y = 0; //X Value for side to side movement
+    		x = -.7; //Y Value for forward or back movement
+    		rotation = .05; //Rotation Value
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation); //Leave Default
+    		Timer.delay(.005); //leave Default
+    		counter++; //Leave Default
     		//200 ticks in a second
     	}
     		
@@ -202,7 +204,9 @@ public class Robot extends SampleRobot
     		Timer.delay(.005);
     		counter++;
     		//200 ticks in a second
-    	}    		
+    	}   
+    	
+    	//End
     }
 
     /**
@@ -290,15 +294,15 @@ public class Robot extends SampleRobot
         	 */
         	{	
         		//X
-        		if(xBox1.getRawAxis(5) > xDeadzone || xBox1.getRawAxis(5) < -xDeadzone) {
-        			x = xBox1.getRawAxis(5) * xLimiter * -1;
+        		if(xBox1.getY() > xDeadzone || xBox1.getY() < -xDeadzone) {
+        			x = xBox1.getY() * xLimiter * -1;
         		} 
         		else {
         			x = 0;
         		}	
         		//Y
-        		if(xBox1.getRawAxis(4) > yDeadzone || xBox1.getRawAxis(4) < -yDeadzone) {
-        			y = xBox1.getRawAxis(4) * yLimiter;
+        		if(xBox1.getX() > yDeadzone || xBox1.getX() < -yDeadzone) {
+        			y = xBox1.getX() * yLimiter;
         		}
         		else {
         			y = 0;
@@ -351,22 +355,119 @@ public class Robot extends SampleRobot
     
     public void putDownBox()
     {
-    	setElevator(true);
-    	Timer.delay(2.0);
-    	setKickers(false);
-    	Timer.delay(.75);
-    	setElevator(false);
+    	boolean isTripped;
+		int counter;
+
+		//Step 1: Lower Main Elevator
+		counter = 0;
+		isTripped = false;
+		while(counter < 400 && isEnabled())
+		{
+			if(!isTripped)
+			{
+				setElevator(true);
+				isTripped = true;
+			}
+			Timer.delay(.005);
+			counter++;
+			//200 ticks in a second
+		}
+		
+		//Step 2: Pulls in Kicker Arms
+				counter = 0;
+				isTripped = false;
+				while(counter < 150 && isEnabled())
+				{
+					if(!isTripped)
+					{
+						setKickers(false);
+						isTripped = true;
+					}
+					Timer.delay(.005);
+					counter++;
+					//200 ticks in a second
+				}
+				
+			//Step 3: Pulls up main elevator
+				counter = 0;
+				isTripped = false;
+				while(counter < 1 && isEnabled())
+				{
+					if(!isTripped)
+					{
+						setElevator(false);
+						isTripped = true;
+					}
+					Timer.delay(.005);
+					counter++;
+					//200 ticks in a second
+				}
     }
     
     public void pickUpBox()
     {
-    	setElevator(true);
-    	Timer.delay(0.5);
-    	setKickers(false);
-    	Timer.delay(1.3);
-    	setKickers(true);
-    	Timer.delay(.75);
-    	setElevator(false);
+    	boolean isTripped;
+		int counter;
+
+		//Step 1: Lower Main Elevator
+		counter = 0;
+		isTripped = false;
+		while(counter < 100 && isEnabled())
+		{
+			if(!isTripped)
+			{
+				setElevator(true);
+				isTripped = true;
+			}
+			Timer.delay(.005);
+			counter++;
+			//200 ticks in a second
+		}
+		
+		//Step 2: Pulls in kicker arms
+				counter = 0;
+				isTripped = false;
+				while(counter < 260 && isEnabled())
+				{
+					if(!isTripped)
+					{
+						setKickers(false);
+						isTripped = true;
+					}
+					Timer.delay(.005);
+					counter++;
+					//200 ticks in a second
+				}
+				
+			//Step 3: Pushes in Kickers
+				counter = 0;
+				isTripped = false;
+				while(counter < 150 && isEnabled())
+				{
+					if(!isTripped)
+					{
+						setKickers(true);
+						isTripped = true;
+					}
+					Timer.delay(.005);
+					counter++;
+					//200 ticks in a second
+				}
+				
+			//Step 4: Pushes in Kickers
+				counter = 0;
+				isTripped = false;
+				while(counter < 1 && isEnabled())
+				{
+					if(!isTripped)
+					{
+						setElevator(false);
+						isTripped = true;
+					}
+					Timer.delay(.005);
+					counter++;
+					//200 ticks in a second
+				}
     }
     
     public void setKickers(boolean state)
