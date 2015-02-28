@@ -107,12 +107,27 @@ public class Robot extends SampleRobot
 			//200 ticks in a second
 		}
 		
+		//move out
+		counter = 0;
+    	isTripped = false;
+    	while(counter < 25  && isEnabled() && isAutonomous())
+    	{
+    		y = -1;
+    		x = 0;
+    		rotation = .05;
+    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+    		Timer.delay(.005);
+    		counter++;
+    		//200 ticks in a second
+    	}
+		
+		
 		/* Probably Needs Time to be changed*/
 		//Constant Running Command
     	//Step 2: Drive Forward
     	counter = 0;		//Leave Default
     	isTripped = false;	//Leave Default
-    	while(counter < 200  && isEnabled() && isAutonomous())  //Count < timeTillNextStep (In Ticks, 200 ticks in a second) 	&& (Leave Default) && (LeaveDefault)
+    	while(counter < 250  && isEnabled() && isAutonomous())  //Count < timeTillNextStep (In Ticks, 200 ticks in a second) 	&& (Leave Default) && (LeaveDefault)
     	{
     		y = 0; //X Value for side to side movement
     		x = .7; //Y Value for forward or back movement
@@ -127,11 +142,11 @@ public class Robot extends SampleRobot
     	//Step 3: Rotate Right
     	counter = 0;
     	isTripped = false;
-    	while(counter < 200  && isEnabled() && isAutonomous())
+    	while(counter < 275  && isEnabled() && isAutonomous())
     	{
     		y = 0;
     		x = 0;
-    		rotation = -.75;
+    		rotation = .75;
     		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
     		Timer.delay(.005);
     		counter++;
@@ -142,7 +157,7 @@ public class Robot extends SampleRobot
     	//Step 4: Drive Forward
     	counter = 0;
     	isTripped = false;
-    	while(counter < 345  && isEnabled() && isAutonomous())
+    	while(counter < 400  && isEnabled() && isAutonomous())
     	{
     		y = 0;
     		x = .7;
@@ -168,14 +183,14 @@ public class Robot extends SampleRobot
 		}
 		
 		/* Probably Needs Time to be changed, possibly even direction changed, or even just deleted.. */
-		//Step 6: Rotate Left Correction
+		//Step 6: Rotate Left
     	counter = 0;
     	isTripped = false;
-    	while(counter < 60  && isEnabled() && isAutonomous())
+    	while(counter < 250  && isEnabled() && isAutonomous())
     	{
     		y = 0;
     		x = 0;
-    		rotation = .75;
+    		rotation = -.75;
     		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
     		Timer.delay(.005);
     		counter++;
@@ -186,10 +201,10 @@ public class Robot extends SampleRobot
     	//Step 7: Drive Backward
     	counter = 0;
     	isTripped = false;
-    	while(counter < 600  && isEnabled() && isAutonomous())
+    	while(counter < 1000  && isEnabled() && isAutonomous())
     	{
-    		y = 0;
-    		x = -.7;
+    		y = -1;
+    		x = 0;
     		rotation = .05;
     		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
     		Timer.delay(.005);
