@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3655.robot;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-//import edu.wpi.first.wpilibj.Gyro;
+import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.SampleRobot;
 import edu.wpi.first.wpilibj.RobotDrive;
 import edu.wpi.first.wpilibj.Joystick;
@@ -29,7 +29,7 @@ public class Robot extends SampleRobot
     private DoubleSolenoid solenoidBinLifter2;
     private Compressor compressor;
     private Victor elevatorWinch;
-    //private Gyro gyroscope;
+    private Gyro gyroscope;
     
     //Variables
 	private double x = 0;
@@ -38,6 +38,11 @@ public class Robot extends SampleRobot
 	private int autonMode = 0;
 	private boolean xBox2Button9Pressed = false;
 	private boolean xBox2Button10Pressed = false;
+	
+	//Gyro Input to Actual Adjust
+	private double angleOffInput = 0;
+	private double angleAdjustCont = .0027; //Motor Output Adjust per Degree
+	private double angleOffThreshold = 1; //Degrees off before correction occurs, + & -
 	
 	 // +- Deadzone on controller Axis
 	private double yDeadzone = .1;
@@ -78,7 +83,8 @@ public class Robot extends SampleRobot
     	setElevator(false);
     	setKickers(false);
     	//Inputs
-    	//gyroscope = new Gyro(RobotMap.gyroInput);
+    	gyroscope = new Gyro(RobotMap.gyroInput);
+    	gyroscope.setSensitivity(0.0072); //Check Data Sheet
     }
 
     /**
@@ -327,8 +333,16 @@ public class Robot extends SampleRobot
         	SmartDashboard.putNumber("Y", xBox1.getRawAxis(5) * -1);
         	SmartDashboard.putNumber("X", xBox1.getRawAxis(4));
         	SmartDashboard.putNumber("Rotation", xBox1.getRawAxis(2) - xBox1.getRawAxis(3) * -1);
+        	SmartDashboard.putNumber("Controller Input Angle", getJoystickAngle(y,x)); //X & Y inverted
+        	SmartDashboard.putNumber("Gyro Angle", gyroscope.getAngle());
+        	
+        	//JoyStick to base angle Correction
+        	angleOffInput = getJoystickAngle(y,x) - gyroscope.getAngle();
+        	if(angleOffInput < angleOffThreshold && angleOffInput > - angleOffThreshold)
+        		angleOffInput = 0;
         	
         	//Drive Base
+        	//Add on this to the rotation	(angleOffInput * angleAdjustConst)
         	mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
         	
         	//Tick Delay (200 times a second)
@@ -477,5 +491,54 @@ public class Robot extends SampleRobot
     	} else {
     		solenoidMainElevator.set(DoubleSolenoid.Value.kReverse);
     	}
+    }
+
+    
+    public double getJoystickAngle(double x, double y)
+    {
+    	int quadrentValue = 0;
+    	
+    	//Top Right
+        if((y <= 1 && y > 0) && (x <= 1 && x > 0))
+        {
+             quadrentValue = 0;
+        }
+        //Top Left
+        else if((y <= 1 && y > 0) && (x >= - 1 && x < 0))
+        {
+             quadrentValue = 90;
+        }
+        //Bottom Left
+        else if((y < 0 && y >= -1) && (x >= - 1 && x < 0))
+        {
+             quadrentValue = 180;
+        }
+        //Bottom Right
+        else if((y < 0 && y >= -1) && (x <= 1 && x > 0))
+        {
+             quadrentValue = 270;
+        }
+        else
+        {
+          if(y == 1)
+          {
+             quadrentValue = 0;
+          }
+          else if(y == -1)
+          {
+             quadrentValue = 180;
+          }
+          else if(x == -1)
+          {
+             quadrentValue = 180;
+          }
+          else if(x == 1)
+          {
+             quadrentValue = 360;
+          }
+        }
+        
+        //System.out.println("Controller Angle: " + desiredControllerAngle);
+        return Math.round(Math.atan2(Math.abs(y), Math.abs(x)) * (180/Math.PI)) + (quadrentValue);
     }
 }
