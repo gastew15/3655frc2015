@@ -351,10 +351,28 @@ public class Robot extends SampleRobot
         	SmartDashboard.putNumber("Controller Input Angle", getJoystickAngle(y,x)); //X & Y inverted
         	SmartDashboard.putNumber("Gyro Angle", gyroscope.getAngle());
         	
+        	double angleModifer = -1;
         	//JoyStick to base angle Correction
-        	angleOffInput = getJoystickAngle(y,x) - gyroscope.getAngle();
-        	if(angleOffInput < angleOffThreshold && angleOffInput > - angleOffThreshold)
+        	if(getJoystickAngle(y,x) > 0 && getJoystickAngle(y,x) <= 90)
+        		angleModifer = 0;
+        	else if(getJoystickAngle(y,x) > 90 && getJoystickAngle(y,x) <= 180)
+        		angleModifer = 90;
+        	else if(getJoystickAngle(y,x) > 180 && getJoystickAngle(y,x) <= 270)
+        		angleModifer = 180;
+        	else if(getJoystickAngle(y,x) > 270 && getJoystickAngle(y,x) <= 360)
+        		angleModifer = 270;
+        	
+        	if(angleModifer != -1)
+        	{
+        		angleOffInput = getJoystickAngle(y,x) - (gyroscope.getAngle() + angleModifer);
+        		if(angleOffInput < angleOffThreshold && angleOffInput > - angleOffThreshold)
+        			angleOffInput = 0;
+        	}
+        	else
+        	{
         		angleOffInput = 0;
+        	}
+        	SmartDashboard.putNumber("Angle Off Input", angleOffInput);
         	
         	//Drive Base
         	//Add on this to the rotation	(angleOffInput * angleAdjustConst)
