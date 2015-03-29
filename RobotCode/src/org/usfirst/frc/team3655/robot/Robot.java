@@ -10,10 +10,14 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.util.Scanner;
+import java.io.File;
+import java.io.PrintWriter;
+
 /**
  * Main Robot Class
  * @author G. Stewart & Will Reid
- * @version 2/18/2015
+ * @version 3/29/2015
  */
 public class Robot extends SampleRobot
 {
@@ -35,7 +39,7 @@ public class Robot extends SampleRobot
 	private double x = 0;
 	private double y = 0;
 	private double rotation = 0;
-	private int autonMode = 0;
+	private int autonMode = 1;
 	private boolean xBox2Button9Pressed = false;
 	private boolean xBox2Button10Pressed = false;
 	
@@ -50,9 +54,9 @@ public class Robot extends SampleRobot
 	private double rotationDeadzone = .1;
 	
 	 // 0 - 1 for Motor Output = Input * limiter
-	private double yLimiter = .9; 
-	private double xLimiter = .9; 
-	private double rotationLimiter = .9; 
+	private double yLimiter = .75; 
+	private double xLimiter = .75; 
+	private double rotationLimiter = .75; 
 
     public Robot() 
     {
@@ -68,10 +72,6 @@ public class Robot extends SampleRobot
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kFrontRight, true);
     	mecanumDrive.setInvertedMotor(RobotDrive.MotorType.kRearRight, true);
     	
-    	//Motors
-    	elevatorWinch = new Victor(RobotMap.elevatorWinchMotor);
-    	elevatorWinch.enableDeadbandElimination(true);
-    	
     	//Solenoids
     	solenoidMainElevator = new DoubleSolenoid(RobotMap.solenoidElevator1, RobotMap.solenoidElevator2);
     	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
@@ -82,9 +82,33 @@ public class Robot extends SampleRobot
     	solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);	
     	setElevator(false);
     	setKickers(false);
+    	
     	//Inputs
     	gyroscope = new Gyro(RobotMap.gyroInput);
+    	gyroscope.reset();
     	gyroscope.setSensitivity(0.0072); //Check Data Sheet
+    	
+    	//Auton Mode Load
+    	try
+    	{
+    		Scanner inputFile = new Scanner(new File("autonMode.dat"));
+    		autonMode = Integer.parseInt(inputFile.next());
+    		inputFile.close();
+    	}
+    	catch(Exception e)
+    	{
+    		System.out.println("Auton File Load Failed - Attempting file creation: " + e);
+    		try
+    		{
+    			PrintWriter outFile = new PrintWriter(new File("autonMode.dat"));
+    			outFile.println(autonMode);
+    			outFile.close();
+    		}
+    		catch(Exception x)
+    		{
+    			System.out.println("Auton File Creation Failed: " + x);
+    		}
+    	}
     }
 
     /**
@@ -228,7 +252,6 @@ public class Robot extends SampleRobot
     {
     	//Intilization
         mecanumDrive.setSafetyEnabled(true);
-        elevatorWinch.setSafetyEnabled(true);
         
         //Loop
         while (isOperatorControl() && isEnabled()) 
@@ -260,19 +283,7 @@ public class Robot extends SampleRobot
         		//R Top Trigger
         		if(xBox2.getRawButton(6)) {
         			pickUpBox();
-        		}     		
-        		//Winch Buttons (Start & Select)
-        		if(xBox2.getRawButton(8)) {
-        			elevatorWinch.set(.8);
-        		}
-        		else if(xBox2.getRawButton(7))
-        		{
-        			elevatorWinch.set(-.8);
-        		}
-        		else
-        		{
-        			elevatorWinch.set(0);
-        		}      		
+        		}    
         		//Left Bin Lifter (Left JoyStick Button)
         		if(xBox2.getRawButton(9) && !xBox2Button9Pressed){
         			if(solenoidBinLifter1.get() == DoubleSolenoid.Value.kForward) {
@@ -353,18 +364,18 @@ public class Robot extends SampleRobot
         	
         	double angleModifer = -1;
         	//JoyStick to base angle Correction
-        	if(getJoystickAngle(y,x) > 0 && getJoystickAngle(y,x) <= 90)
+        	if(getJoystickAngle(x,y) > 0 && getJoystickAngle(x,y) <= 90)
         		angleModifer = 0;
-        	else if(getJoystickAngle(y,x) > 90 && getJoystickAngle(y,x) <= 180)
+        	else if(getJoystickAngle(x,y) > 90 && getJoystickAngle(x,y) <= 180)
         		angleModifer = 90;
-        	else if(getJoystickAngle(y,x) > 180 && getJoystickAngle(y,x) <= 270)
+        	else if(getJoystickAngle(x,y) > 180 && getJoystickAngle(x,y) <= 270)
         		angleModifer = 180;
-        	else if(getJoystickAngle(y,x) > 270 && getJoystickAngle(y,x) <= 360)
+        	else if(getJoystickAngle(x,y) > 270 && getJoystickAngle(x,y) <= 360)
         		angleModifer = 270;
         	
         	if(angleModifer != -1)
         	{
-        		angleOffInput = getJoystickAngle(y,x) - (gyroscope.getAngle() + angleModifer);
+        		angleOffInput = getJoystickAngle(x,y) - (gyroscope.getAngle() + angleModifer);
         		if(angleOffInput < angleOffThreshold && angleOffInput > - angleOffThreshold)
         			angleOffInput = 0;
         	}
@@ -373,6 +384,7 @@ public class Robot extends SampleRobot
         		angleOffInput = 0;
         	}
         	SmartDashboard.putNumber("Angle Off Input", angleOffInput);
+        	SmartDashboard.putNumber("AutonMode", autonMode);
         	
         	//Drive Base
         	//Add on this to the rotation	(angleOffInput * angleAdjustConst)
@@ -388,7 +400,63 @@ public class Robot extends SampleRobot
      */
     public void test() 
     {
+    	double autonModeProgTimer = 0;
+    	boolean autonModeProgActive = false;
     	
+    	//Auton Mode Programming
+		//Select or Start?
+    	if(!autonModeProgActive)
+    	{
+    		if(xBox1.getRawButton(7)) {
+    			autonModeProgTimer += 0.005;
+    		}
+    		else {
+    			autonModeProgTimer = 0;
+    		}
+		
+    		if(autonModeProgTimer >= 1) {
+    			autonModeProgActive = true;
+    			autonModeProgTimer = 0;
+    		}
+    	}
+    	else
+    	{
+    		//A
+        	if(xBox2.getRawButton(1)) {
+        		autonMode = 1;
+        		autonModeProgActive = false;
+        	}
+        	//B
+        	if(xBox2.getRawButton(2)) {
+        		autonModeProgActive = false;
+        		autonMode = 2;
+        	}
+        	//X
+        	if(xBox2.getRawButton(3)) {
+        		autonModeProgActive = false;
+        		autonMode = 3;
+        	}
+        	
+        	if(!autonModeProgActive)
+        	{
+        		try
+        		{
+        			PrintWriter outFile = new PrintWriter(new File("autonMode.dat"));
+        			outFile.println(autonMode);
+        			outFile.close();
+        		}
+        		catch(Exception x)
+        		{
+        			System.out.println("Auton File Write Failed: " + x);
+        		}
+        	}
+    	}
+    	
+    	SmartDashboard.putBoolean("Auton Program Active", autonModeProgActive);
+    	SmartDashboard.putNumber("AutonMode", autonMode);
+		
+		//Tick Delay (200 times a second)
+        Timer.delay(0.005);	
     }
     
     public void putDownBox()
