@@ -10,14 +10,10 @@ import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-import java.util.Scanner;
-import java.io.File;
-import java.io.PrintWriter;
-
 /**
  * Main Robot Class
  * @author G. Stewart & Will Reid
- * @version 3/29/2015
+ * @version 3/30/2015
  */
 public class Robot extends SampleRobot
 {
@@ -34,12 +30,12 @@ public class Robot extends SampleRobot
     private Compressor compressor;
     private Victor elevatorWinch;
     private Gyro gyroscope;
+    private AutonModeHandler autonModeHandler = new AutonModeHandler();
     
     //Variables
 	private double x = 0;
 	private double y = 0;
 	private double rotation = 0;
-	private int autonMode = 1;
 	private boolean xBox2Button9Pressed = false;
 	private boolean xBox2Button10Pressed = false;
 	
@@ -89,26 +85,7 @@ public class Robot extends SampleRobot
     	gyroscope.setSensitivity(0.0072); //Check Data Sheet
     	
     	//Auton Mode Load
-    	try
-    	{
-    		Scanner inputFile = new Scanner(new File("autonMode.dat"));
-    		autonMode = Integer.parseInt(inputFile.next());
-    		inputFile.close();
-    	}
-    	catch(Exception e)
-    	{
-    		System.out.println("Auton File Load Failed - Attempting file creation: " + e);
-    		try
-    		{
-    			PrintWriter outFile = new PrintWriter(new File("autonMode.dat"));
-    			outFile.println(autonMode);
-    			outFile.close();
-    		}
-    		catch(Exception x)
-    		{
-    			System.out.println("Auton File Creation Failed: " + x);
-    		}
-    	}
+    	AutonModeHandler.getAutonMode();
     }
 
     /**
@@ -384,7 +361,7 @@ public class Robot extends SampleRobot
         		angleOffInput = 0;
         	}
         	SmartDashboard.putNumber("Angle Off Input", angleOffInput);
-        	SmartDashboard.putNumber("AutonMode", autonMode);
+        	SmartDashboard.putNumber("AutonMode", AutonModeHandler.getAutonMode());
         	
         	//Drive Base
         	//Add on this to the rotation	(angleOffInput * angleAdjustConst)
@@ -423,37 +400,28 @@ public class Robot extends SampleRobot
     	{
     		//A
         	if(xBox2.getRawButton(1)) {
-        		autonMode = 1;
+        		autonModeHandler.setAutonMode(1);
         		autonModeProgActive = false;
         	}
         	//B
         	if(xBox2.getRawButton(2)) {
         		autonModeProgActive = false;
-        		autonMode = 2;
+        		autonModeHandler.setAutonMode(1);
         	}
         	//X
         	if(xBox2.getRawButton(3)) {
         		autonModeProgActive = false;
-        		autonMode = 3;
+        		autonModeHandler.setAutonMode(1);
         	}
         	
         	if(!autonModeProgActive)
         	{
-        		try
-        		{
-        			PrintWriter outFile = new PrintWriter(new File("autonMode.dat"));
-        			outFile.println(autonMode);
-        			outFile.close();
-        		}
-        		catch(Exception x)
-        		{
-        			System.out.println("Auton File Write Failed: " + x);
-        		}
+        		autonModeHandler.saveData();
         	}
     	}
     	
     	SmartDashboard.putBoolean("Auton Program Active", autonModeProgActive);
-    	SmartDashboard.putNumber("AutonMode", autonMode);
+    	SmartDashboard.putNumber("AutonMode", AutonModeHandler.getAutonMode());
 		
 		//Tick Delay (200 times a second)
         Timer.delay(0.005);	
