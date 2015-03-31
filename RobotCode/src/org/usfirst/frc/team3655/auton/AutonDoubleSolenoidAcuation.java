@@ -15,6 +15,11 @@ public class AutonDoubleSolenoidAcuation extends AutonSingleAcuation
 	List<DoubleSolenoid> solenoids;
 	List<DoubleSolenoid.Value> values;
 	
+	/**
+	 * Single solenoid constructor
+	 * @param solenoid solenoid object to manipulate
+	 * @param value what state to set the solenoid to
+	 */
 	public AutonDoubleSolenoidAcuation(DoubleSolenoid solenoid, DoubleSolenoid.Value value)
 	{
 		this.solenoids = new ArrayList<DoubleSolenoid>();
@@ -23,6 +28,11 @@ public class AutonDoubleSolenoidAcuation extends AutonSingleAcuation
 		this.values.add(value);
 	}
 	
+	/**
+	 * Multi solenoid constructor
+	 * @param solenoids solenoid objects to manipulate
+	 * @param values what states to set the solenoids to
+	 */
 	public AutonDoubleSolenoidAcuation(List<DoubleSolenoid> solenoids, List<DoubleSolenoid.Value> values)
 	{
 		this.solenoids = solenoids;

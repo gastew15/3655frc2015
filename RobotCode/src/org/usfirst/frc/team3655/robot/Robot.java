@@ -1,5 +1,7 @@
 package org.usfirst.frc.team3655.robot;
 
+import java.util.ArrayList;
+import java.util.List;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Gyro;
 import edu.wpi.first.wpilibj.SampleRobot;
@@ -9,7 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team3655.auton.AutonModeHandler;
+import org.usfirst.frc.team3655.auton.*;
 
 /**
  * Main Robot Class
@@ -99,12 +101,30 @@ public class Robot extends SampleRobot
      * Auton Code
      */
 	public void autonomous() 
-    {    	
+    {   
+		int autonStepNum = 0;
+		
     	switch(AutonModeHandler.getAutonMode())
     	{
     	//Drives Into Zone (ONLY)
     	case 1:
+    		//Varibles
+    		List<AutonBase> autonSteps = new ArrayList<AutonBase>();
+    		List<Integer> autonRunTime = new ArrayList<Integer>();
+
+    		//Steps
+    		autonSteps.add(new AutonDrive(.5, 0, 0, mecanumDrive)); //X, Y, Rotation, DriveBase
+    		autonRunTime.add(500); //Time to run in miliseconds
+    		autonSteps.add(new AutonDoubleSolenoidAcuation(solenoidMainElevator, DoubleSolenoid.Value.kForward)); //Solenoid, Value
+    		autonRunTime.add(1000); //Time to run in miliseconds
     		
+    		//Step Loop
+    		for(int i = 0; i < autonSteps.size(); i++)
+    		{
+    			autonSteps.get(i).iterate(autonRunTime.get(i), 0.005);
+    			
+    			autonStepNum++;
+    		}
     		break;
     	//Picks Up Box and drives into zone
     	case 2:

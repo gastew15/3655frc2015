@@ -18,6 +18,13 @@ public class AutonDrive extends AutonBase
 	double rotation;
 	RobotDrive drive;
 	
+	/**
+	 * Main constructor (Mecanum Drive)
+	 * @param x what x value to pass into base
+	 * @param y what y value to pass into base
+	 * @param rotation what rotation value to pass into base
+	 * @param drive what drive base to set the values to
+	 */
 	public AutonDrive(double x, double y, double rotation, RobotDrive drive)
 	{
 		super();

@@ -36,5 +36,9 @@ public abstract class AutonSingleAcuation extends AutonBase
 		}		
 	}
 	
+	/**
+	 * Determines what happens when the loop is tripped to complete the task
+	 * @return void
+	 */
 	public abstract void acuationTask();
 }
