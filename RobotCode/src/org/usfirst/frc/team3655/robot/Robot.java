@@ -9,11 +9,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.usfirst.frc.team3655.auton.*;
 
 /**
  * Main Robot Class
  * @author G. Stewart & Will Reid
- * @version 3/30/2015
+ * @version 3/31/2015
  */
 public class Robot extends SampleRobot
 {
@@ -24,11 +25,11 @@ public class Robot extends SampleRobot
     //SubSystems
     private RobotDrive mecanumDrive;
     private DoubleSolenoid solenoidMainElevator;
-    private DoubleSolenoid solenoidElevatorKickers;
     private DoubleSolenoid solenoidBinLifter1;
     private DoubleSolenoid solenoidBinLifter2;
     private Compressor compressor;
-    private Victor elevatorWinch;
+    private Victor intakeBinWheel1;
+    private Victor intakeBinWheel2;
     private Gyro gyroscope;
     private AutonModeHandler autonModeHandler = new AutonModeHandler();
     
@@ -70,14 +71,14 @@ public class Robot extends SampleRobot
     	
     	//Solenoids
     	solenoidMainElevator = new DoubleSolenoid(RobotMap.solenoidElevator1, RobotMap.solenoidElevator2);
-    	solenoidElevatorKickers = new DoubleSolenoid(RobotMap.solenoidElevatorKicker1, RobotMap.solenoidElevatorKicker2); 
     	solenoidBinLifter1 = new DoubleSolenoid(RobotMap.solenoidBinLifter1_1, RobotMap.solenoidBinLifter1_2);
     	solenoidBinLifter2 = new DoubleSolenoid(RobotMap.solenoidBinLifter2_1, RobotMap.solenoidBinLifter2_2);
+    	intakeBinWheel1 = new Victor(RobotMap.intakeWheel1);
+    	intakeBinWheel2 = new Victor(RobotMap.intakeWheel2);
     	compressor = new Compressor();
     	compressor.start();
     	solenoidBinLifter2.set(DoubleSolenoid.Value.kForward);	
     	setElevator(false);
-    	setKickers(false);
     	
     	//Inputs
     	gyroscope = new Gyro(RobotMap.gyroInput);
@@ -243,11 +244,13 @@ public class Robot extends SampleRobot
         		}
         		//B
         		if(xBox2.getRawButton(2)) {
-        			setKickers(false);
+        			intakeBinWheel1.set(.8);
+        			intakeBinWheel2.set(.8);
         		}
         		//X
         		if(xBox2.getRawButton(3)) {
-        			setKickers(true);
+        			intakeBinWheel1.set(-.8);
+        			intakeBinWheel2.set(-.8);
         		}
         		//Y
         		if(xBox2.getRawButton(4)) {
@@ -446,21 +449,6 @@ public class Robot extends SampleRobot
 			counter++;
 			//200 ticks in a second
 		}
-		
-		//Step 2: Pulls in Kicker Arms
-				counter = 0;
-				isTripped = false;
-				while(counter < 150 && isEnabled())
-				{
-					if(!isTripped)
-					{
-						setKickers(false);
-						isTripped = true;
-					}
-					Timer.delay(.005);
-					counter++;
-					//200 ticks in a second
-				}
 				
 			//Step 3: Pulls up main elevator
 				counter = 0;
@@ -497,36 +485,6 @@ public class Robot extends SampleRobot
 			counter++;
 			//200 ticks in a second
 		}
-		
-		//Step 2: Pulls in kicker arms
-				counter = 0;
-				isTripped = false;
-				while(counter < 260 && isEnabled())
-				{
-					if(!isTripped)
-					{
-						setKickers(false);
-						isTripped = true;
-					}
-					Timer.delay(.005);
-					counter++;
-					//200 ticks in a second
-				}
-				
-			//Step 3: Pushes in Kickers
-				counter = 0;
-				isTripped = false;
-				while(counter < 150 && isEnabled())
-				{
-					if(!isTripped)
-					{
-						setKickers(true);
-						isTripped = true;
-					}
-					Timer.delay(.005);
-					counter++;
-					//200 ticks in a second
-				}
 				
 			//Step 4: Pushes in Kickers
 				counter = 0;
@@ -542,15 +500,6 @@ public class Robot extends SampleRobot
 					counter++;
 					//200 ticks in a second
 				}
-    }
-    
-    public void setKickers(boolean state)
-    {
-    	if(state) {
-    		solenoidElevatorKickers.set(DoubleSolenoid.Value.kForward);
-    	} else {
-    		solenoidElevatorKickers.set(DoubleSolenoid.Value.kReverse);
-    	}
     }
     
     public void setElevator(boolean state)

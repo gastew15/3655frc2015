@@ -1,4 +1,4 @@
-package org.usfirst.frc.team3655.robot;
+package org.usfirst.frc.team3655.auton;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -82,6 +82,7 @@ public class AutonModeHandler
 	 * @param autonMode
 	 * @return void
 	 */
+	@SuppressWarnings("static-access")
 	public void setAutonMode(int autonMode)
 	{
 		this.autonMode = autonMode;

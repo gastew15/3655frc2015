@@ -1,0 +1,36 @@
+package org.usfirst.frc.team3655.auton;
+
+/**
+ * Base class for auton Modes
+ * @author G. Stewart
+ * @version 3/30/2015
+ */
+
+public abstract class AutonBase 
+{
+	int counter;
+	boolean isEnabled;
+	boolean isAutonomous;
+	
+	public AutonBase()
+	{
+		reset();
+	}
+	
+	public abstract void iterate(int milisecondsToRun, double milisecondDelayTimeValue);
+	
+	public void reset()
+	{
+		counter = 0;
+	}	
+	
+	public void setIsEnabled(boolean isEnabled)
+	{
+		this.isEnabled = isEnabled;
+	}
+	
+	public void setIsAutonmous(boolean isAutonomous)
+	{
+		this.isAutonomous = isAutonomous;
+	}
+}

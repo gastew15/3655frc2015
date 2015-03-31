@@ -12,16 +12,8 @@ public class RobotMap
     public static int driveForwardRightMotor = 3;
     public static int driveRearLeftMotor = 0;
     public static int driveRearRightMotor = 1;
-    
-    //DIO
-	public static int rotarEncoderForwardLeftA = 0;
-	public static int rotarEncoderForwardLeftB = 1;	
-	public static int rotarEncoderForwardRightA = 4;
-	public static int rotarEncoderForwardRightB = 5;	
-	public static int rotarEncoderRearLeftA = 2;
-	public static int rotarEncoderRearLeftB = 3;	
-	public static int rotarEncoderRearRightA = 6;
-	public static int rotarEncoderRearRightB = 7;
+    public static int intakeWheel1 = 4;
+    public static int intakeWheel2 = 5;
 	
 	//Analog
 	public static int gyroInput = 0;
@@ -29,8 +21,6 @@ public class RobotMap
 	//Solenoid
 	public static int solenoidElevator1 = 0;
 	public static int solenoidElevator2 = 1;
-	public static int solenoidElevatorKicker1 = 2;
-	public static int solenoidElevatorKicker2 = 3;
 	public static int solenoidBinLifter1_1 = 4;
 	public static int solenoidBinLifter1_2 = 5;
 	public static int solenoidBinLifter2_1 = 6;
