@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import org.usfirst.frc.team3655.auton.*;
+import org.usfirst.frc.team3655.auton.AutonModeHandler;
 
 /**
  * Main Robot Class
@@ -18,6 +18,9 @@ import org.usfirst.frc.team3655.auton.*;
  */
 public class Robot extends SampleRobot
 {
+	public static boolean isEnabled;
+	public static boolean isAutonomous;
+	
 	//Input Devices
 	private Joystick xBox1;
     private Joystick xBox2;
@@ -57,6 +60,9 @@ public class Robot extends SampleRobot
 
     public Robot() 
     {
+    	isEnabled = isEnabled();
+    	isAutonomous = isAutonomous();
+    	
     	//JoySticks
     	xBox1 = new Joystick(0);
         xBox2 = new Joystick(1);
@@ -86,7 +92,7 @@ public class Robot extends SampleRobot
     	gyroscope.setSensitivity(0.0072); //Check Data Sheet
     	
     	//Auton Mode Load
-    	AutonModeHandler.getAutonMode();
+    	autonModeHandler.loadData();
     }
 
     /**
@@ -94,133 +100,21 @@ public class Robot extends SampleRobot
      */
 	public void autonomous() 
     {    	
-    	//autonMode = (int)SmartDashboard.getNumber("Auton Mode", 0);
-		
-		boolean isTripped;
-		int counter;
-
-		//Single Acuation Command
-		//Step 1: Pick Up Can
-		counter = 0;  					//Leave Default
-		isTripped = false;				//Leave Default
-		while(counter < 200 && isEnabled() && isAutonomous()) //Count < timeTillNextStep (In Ticks, 200 ticks in a second) 	&& (Leave Default) && (LeaveDefault)
-		{
-			if(!isTripped) //Leave Defualt
-			{
-				solenoidBinLifter2.set(DoubleSolenoid.Value.kForward); //Action to perform goes here
-				isTripped = true; //Leave Default
-			}
-			Timer.delay(.005); //Leave Default
-			counter++; //Leave Default
-			//200 ticks in a second
-		}
-		
-		//move out
-		counter = 0;
-    	isTripped = false;
-    	while(counter < 25  && isEnabled() && isAutonomous())
+    	switch(AutonModeHandler.getAutonMode())
     	{
-    		y = -1;
-    		x = 0;
-    		rotation = .05;
-    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    		Timer.delay(.005);
-    		counter++;
-    		//200 ticks in a second
-    	}
-		
-		
-		/* Probably Needs Time to be changed*/
-		//Constant Running Command
-    	//Step 2: Drive Forward
-    	counter = 0;		//Leave Default
-    	isTripped = false;	//Leave Default
-    	while(counter < 250  && isEnabled() && isAutonomous())  //Count < timeTillNextStep (In Ticks, 200 ticks in a second) 	&& (Leave Default) && (LeaveDefault)
-    	{
-    		y = 0; //X Value for side to side movement
-    		x = .7; //Y Value for forward or back movement
-    		rotation = .05; //Rotation Value
-    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation); //Leave Default
-    		Timer.delay(.005); //leave Default
-    		counter++; //Leave Default
-    		//200 ticks in a second
-    	}
-		
-    	/* Probably Needs Time to be changed*/
-    	//Step 3: Rotate Right
-    	counter = 0;
-    	isTripped = false;
-    	while(counter < 275  && isEnabled() && isAutonomous())
-    	{
-    		y = 0;
-    		x = 0;
-    		rotation = .75;
-    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    		Timer.delay(.005);
-    		counter++;
-    		//200 ticks in a second
-    	}
-    	
-    	/* Probably Needs Time to be changed*/
-    	//Step 4: Drive Forward
-    	counter = 0;
-    	isTripped = false;
-    	while(counter < 400  && isEnabled() && isAutonomous())
-    	{
-    		y = 0;
-    		x = .7;
-    		rotation = .05;
-    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    		Timer.delay(.005);
-    		counter++;
-    		//200 ticks in a second
-    	}
+    	//Drives Into Zone (ONLY)
+    	case 1:
     		
-    	//Step 5: Pick Up Box
-    	counter = 0;
-		isTripped = false;
-		while(counter < 100  && isEnabled() && isAutonomous())
-		{
-			if(!isTripped)
-			{
-				pickUpBox();
-				isTripped = true;
-			}
-			Timer.delay(.005);
-			counter++;
-		}
-		
-		/* Probably Needs Time to be changed, possibly even direction changed, or even just deleted.. */
-		//Step 6: Rotate Left
-    	counter = 0;
-    	isTripped = false;
-    	while(counter < 250  && isEnabled() && isAutonomous())
-    	{
-    		y = 0;
-    		x = 0;
-    		rotation = -.75;
-    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    		Timer.delay(.005);
-    		counter++;
-    		//200 ticks in a second
+    		break;
+    	//Picks Up Box and drives into zone
+    	case 2:
+    		
+    		break;
+    	//Picks Up All Boxes and drives into zone
+    	case 3:
+    		
+    		break;
     	}
-    	
-    	/* Probably Needs Time to be Increased, or possibly right*/
-    	//Step 7: Drive Backward
-    	counter = 0;
-    	isTripped = false;
-    	while(counter < 1000  && isEnabled() && isAutonomous())
-    	{
-    		y = -1;
-    		x = 0;
-    		rotation = .05;
-    		mecanumDrive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
-    		Timer.delay(.005);
-    		counter++;
-    		//200 ticks in a second
-    	}  
-    	
-    	//End
     }
 
     /**

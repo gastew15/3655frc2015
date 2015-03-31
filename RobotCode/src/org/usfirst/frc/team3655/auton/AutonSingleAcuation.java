@@ -1,5 +1,6 @@
 package org.usfirst.frc.team3655.auton;
 
+import org.usfirst.frc.team3655.robot.Robot;
 import edu.wpi.first.wpilibj.Timer;
 
 /**
@@ -23,7 +24,7 @@ public abstract class AutonSingleAcuation extends AutonBase
 	{
 		counter = 0;
 		isTripped = false;
-		while(counter * milisecondDelayTimeValue < milisecondsToRun && isEnabled && isAutonomous)
+		while(counter * milisecondDelayTimeValue < milisecondsToRun && Robot.isEnabled && Robot.isAutonomous)
 		{
 			if(!isTripped)
 			{

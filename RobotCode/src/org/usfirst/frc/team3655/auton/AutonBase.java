@@ -3,7 +3,7 @@ package org.usfirst.frc.team3655.auton;
 /**
  * Base class for auton Modes
  * @author G. Stewart
- * @version 3/30/2015
+ * @version 3/31/2015
  */
 
 public abstract class AutonBase 
@@ -23,14 +23,4 @@ public abstract class AutonBase
 	{
 		counter = 0;
 	}	
-	
-	public void setIsEnabled(boolean isEnabled)
-	{
-		this.isEnabled = isEnabled;
-	}
-	
-	public void setIsAutonmous(boolean isAutonomous)
-	{
-		this.isAutonomous = isAutonomous;
-	}
 }
