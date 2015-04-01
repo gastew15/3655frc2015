@@ -102,29 +102,20 @@ public class Robot extends SampleRobot
      */
 	public void autonomous() 
     {   
-		int autonStepNum = 0;
+		//Varibles
+		int autonStepNum = 0; //Not really needed, but can be used to see how far along it is
+		List<AutonBase> autonSteps = new ArrayList<AutonBase>();
+		List<Integer> autonRunTime = new ArrayList<Integer>();
 		
-    	switch(AutonModeHandler.getAutonMode())
-    	{
+		switch(AutonModeHandler.getAutonMode())
+    	{		
     	//Drives Into Zone (ONLY)
     	case 1:
-    		//Varibles
-    		List<AutonBase> autonSteps = new ArrayList<AutonBase>();
-    		List<Integer> autonRunTime = new ArrayList<Integer>();
-
-    		//Steps
+    		//Steps (Test/EX)
     		autonSteps.add(new AutonDrive(.5, 0, 0, mecanumDrive)); //X, Y, Rotation, DriveBase
     		autonRunTime.add(500); //Time to run in miliseconds
     		autonSteps.add(new AutonDoubleSolenoidAcuation(solenoidMainElevator, DoubleSolenoid.Value.kForward)); //Solenoid, Value
     		autonRunTime.add(1000); //Time to run in miliseconds
-    		
-    		//Step Loop
-    		for(int i = 0; i < autonSteps.size(); i++)
-    		{
-    			autonSteps.get(i).iterate(autonRunTime.get(i), 0.005);
-    			
-    			autonStepNum++;
-    		}
     		break;
     	//Picks Up Box and drives into zone
     	case 2:
@@ -135,6 +126,14 @@ public class Robot extends SampleRobot
     		
     		break;
     	}
+    	
+		//Step Loop
+		for(int i = 0; i < autonSteps.size(); i++)
+		{
+			autonSteps.get(i).iterate(autonRunTime.get(i), 0.005);
+			
+			autonStepNum++;
+		}
     }
 
     /**
