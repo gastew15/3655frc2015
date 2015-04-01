@@ -20,14 +20,12 @@ public abstract class AutonBase
 	/**
 	 * Runs the main loop for the system
 	 * @param milisecondsToRun how long you want the loop to run before it stops in miliseconds
-	 * @param milisecondsDelayTimeValue how long the delay value for the loop is in miliseconds (EX: 0.005 loops 200 times a second)
-	 * @return void
+	 * @param milisecondDelayTimeValue how long the delay value for the loop is in miliseconds (EX: 0.005 loops 200 times a second)
 	 */
 	public abstract void iterate(int milisecondsToRun, double milisecondDelayTimeValue);
 	
 	/**
 	 * Resets the counter for the run loop to 0, probably not needed ever
-	 * @return void
 	 */
 	public void reset()
 	{

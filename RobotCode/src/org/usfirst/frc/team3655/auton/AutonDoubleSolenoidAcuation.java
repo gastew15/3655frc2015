@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 
 /**
- * Auton Class for single acuation Solenoid systems
+ * Auton Class for single actuation DoubleSolenoid systems
  * @author G. Stewart
  * @version 3/31/2015
  */
@@ -17,7 +17,7 @@ public class AutonDoubleSolenoidAcuation extends AutonSingleAcuation
 	
 	/**
 	 * Single solenoid constructor
-	 * @param solenoid solenoid object to manipulate
+	 * @param solenoid Doublesolenoid object to manipulate
 	 * @param value what state to set the solenoid to
 	 */
 	public AutonDoubleSolenoidAcuation(DoubleSolenoid solenoid, DoubleSolenoid.Value value)
@@ -30,7 +30,7 @@ public class AutonDoubleSolenoidAcuation extends AutonSingleAcuation
 	
 	/**
 	 * Multi solenoid constructor
-	 * @param solenoids solenoid objects to manipulate
+	 * @param solenoids DoubleSolenoid objects to manipulate
 	 * @param values what states to set the solenoids to
 	 */
 	public AutonDoubleSolenoidAcuation(List<DoubleSolenoid> solenoids, List<DoubleSolenoid.Value> values)

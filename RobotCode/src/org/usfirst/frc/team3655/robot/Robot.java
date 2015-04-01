@@ -15,7 +15,7 @@ import org.usfirst.frc.team3655.auton.*;
 
 /**
  * Main Robot Class
- * @author G. Stewart & Will Reid
+ * @author G. Stewart and Will Reid
  * @version 3/31/2015
  */
 public class Robot extends SampleRobot

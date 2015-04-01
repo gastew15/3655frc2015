@@ -14,7 +14,7 @@ public class TeleOpAutonMapping
 	
 	/**
 	 * Base constructor that accepts what joystick to monitor
-	 * @param joystick
+	 * @param joystick what joystick object to monitor
 	 */
 	public TeleOpAutonMapping(Joystick joystick)
 	{

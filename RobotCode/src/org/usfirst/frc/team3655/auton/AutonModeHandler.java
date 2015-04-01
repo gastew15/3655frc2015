@@ -24,7 +24,6 @@ public class AutonModeHandler
 	
 	/**
 	 * Saves Auton Mode to local file
-	 * @return void
 	 */
 	public void saveData()
 	{
@@ -42,7 +41,6 @@ public class AutonModeHandler
 	
 	/**
 	 * Loads Auton Mode from local file
-	 * @return void
 	 */
 	public void loadData()
 	{
@@ -70,7 +68,7 @@ public class AutonModeHandler
 	
 	/**
 	 * Returns current autonMode
-	 * @return autonMode
+	 * @return int
 	 */
 	public static int getAutonMode()
 	{
@@ -79,8 +77,7 @@ public class AutonModeHandler
 	
 	/**
 	 * Sets current autonMode
-	 * @param autonMode
-	 * @return void
+	 * @param autonMode manually set what autonomous mode the robot is in
 	 */
 	@SuppressWarnings("static-access")
 	public void setAutonMode(int autonMode)
