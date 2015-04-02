@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class AutonModeHandler 
 {
-	static int autonMode = 0;
+	static int autonMode = 1;
 	
 	/**
 	 * Default constructor, intilizes autonMode with save file data

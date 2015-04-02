@@ -28,7 +28,7 @@ public abstract class AutonSingleAcuation extends AutonBase
 		{
 			if(!isTripped)
 			{
-				 acuationTask();
+				acuationTask();
 				isTripped = true;
 			}
 			Timer.delay(milisecondDelayTimeValue);

@@ -133,6 +133,7 @@ public class Robot extends SampleRobot
 			autonSteps.get(i).iterate(autonRunTime.get(i), 0.005);
 			
 			autonStepNum++;
+			SmartDashboard.putNumber("Auton Step", autonStepNum);
 		}
     }
 
@@ -152,33 +153,33 @@ public class Robot extends SampleRobot
         	 */
         	{
         		//A
-        		if(xBox2.getRawButton(1)) {
+        		if(xBox1.getRawButton(1)) {
         			setElevator(true);
         		}
         		//B
-        		if(xBox2.getRawButton(2)) {
+        		if(xBox1.getRawButton(2)) {
         			intakeBinWheel1.set(.8);
         			intakeBinWheel2.set(.8);
         		}
         		//X
-        		if(xBox2.getRawButton(3)) {
+        		if(xBox1.getRawButton(3)) {
         			intakeBinWheel1.set(-.8);
         			intakeBinWheel2.set(-.8);
         		}
         		//Y
-        		if(xBox2.getRawButton(4)) {
+        		if(xBox1.getRawButton(4)) {
         			setElevator(false);
         		}		
         		//L Top Trigger
-        		if(xBox2.getRawButton(5)) {
+        		if(xBox1.getRawButton(5)) {
         			putDownBox();       			
         		}      		
         		//R Top Trigger
-        		if(xBox2.getRawButton(6)) {
+        		if(xBox1.getRawButton(6)) {
         			pickUpBox();
         		}    
         		//Left Bin Lifter (Left JoyStick Button)
-        		if(xBox2.getRawButton(9) && !xBox2Button9Pressed){
+        		if(xBox1.getRawButton(9) && !xBox2Button9Pressed){
         			if(solenoidBinLifter1.get() == DoubleSolenoid.Value.kForward) {
         				solenoidBinLifter1.set(DoubleSolenoid.Value.kReverse);
         			} else {
@@ -186,12 +187,12 @@ public class Robot extends SampleRobot
         			}
         			xBox2Button9Pressed = true;
         		}
-        		else if(!xBox2.getRawButton(9))
+        		else if(!xBox1.getRawButton(9))
         		{
         			xBox2Button9Pressed = false;
         		}       		
         		//Right Bin Lifter (Right JoyStick Button)
-        		if(xBox2.getRawButton(10) && !xBox2Button10Pressed){
+        		if(xBox1.getRawButton(10) && !xBox2Button10Pressed){
         			if(solenoidBinLifter2.get() == DoubleSolenoid.Value.kForward) {
         				solenoidBinLifter2.set(DoubleSolenoid.Value.kReverse);
         			} else {
@@ -199,7 +200,7 @@ public class Robot extends SampleRobot
         			}
         			xBox2Button10Pressed = true;
         		}
-        		else if(!xBox2.getRawButton(10))
+        		else if(!xBox1.getRawButton(10))
         		{
         			xBox2Button10Pressed = false;
         		}
@@ -277,6 +278,7 @@ public class Robot extends SampleRobot
         		angleOffInput = 0;
         	}
         	SmartDashboard.putNumber("Angle Off Input", angleOffInput);
+          	SmartDashboard.putBoolean("Auton Program Active", false);
         	SmartDashboard.putNumber("AutonMode", AutonModeHandler.getAutonMode());
         	
         	//Drive Base
@@ -296,6 +298,8 @@ public class Robot extends SampleRobot
     	double autonModeProgTimer = 0;
     	boolean autonModeProgActive = false;
     	
+    	while(isEnabled() && isTest())
+    	{
     	//Auton Mode Programming
 		//Select or Start?
     	if(!autonModeProgActive)
@@ -322,12 +326,12 @@ public class Robot extends SampleRobot
         	//B
         	if(xBox2.getRawButton(2)) {
         		autonModeProgActive = false;
-        		autonModeHandler.setAutonMode(1);
+        		autonModeHandler.setAutonMode(2);
         	}
         	//X
-        	if(xBox2.getRawButton(3)) {
+        	if(xBox2.getRawButton(4)) {
         		autonModeProgActive = false;
-        		autonModeHandler.setAutonMode(1);
+        		autonModeHandler.setAutonMode(3);
         	}
         	
         	if(!autonModeProgActive)
@@ -341,6 +345,7 @@ public class Robot extends SampleRobot
 		
 		//Tick Delay (200 times a second)
         Timer.delay(0.005);	
+    	}
     }
     
     public void putDownBox()
