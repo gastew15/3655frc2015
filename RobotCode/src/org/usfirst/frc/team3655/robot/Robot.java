@@ -112,12 +112,10 @@ public class Robot extends SampleRobot
     	//Drives Into Zone (ONLY)
     	case 1:
     		//Steps (Test/EX)
-    		autonSteps.add(new AutonDrive(.5, 0, 0, mecanumDrive)); //X, Y, Rotation, DriveBase
-    		autonRunTime.add(500); //Time to run in miliseconds
-    		autonSteps.add(new AutonDoubleSolenoidAcuation(solenoidMainElevator, DoubleSolenoid.Value.kForward)); //Solenoid, Value
+    		autonSteps.add(new AutonDrive(.75, 0, 0, mecanumDrive)); //X, Y, Rotation, DriveBase
     		autonRunTime.add(1000); //Time to run in miliseconds
     		break;
-    	//Picks Up Box and drives into zone
+    	//Do nothing
     	case 2:
     		
     		break;
@@ -130,10 +128,11 @@ public class Robot extends SampleRobot
 		//Step Loop
 		for(int i = 0; i < autonSteps.size(); i++)
 		{
+			SmartDashboard.putNumber("Auton Step", autonStepNum);
+			
 			autonSteps.get(i).iterate(autonRunTime.get(i), 0.005);
 			
 			autonStepNum++;
-			SmartDashboard.putNumber("Auton Step", autonStepNum);
 		}
     }
 
@@ -153,33 +152,33 @@ public class Robot extends SampleRobot
         	 */
         	{
         		//A
-        		if(xBox1.getRawButton(1)) {
+        		if(xBox2.getRawButton(1)) {
         			setElevator(true);
         		}
         		//B
-        		if(xBox1.getRawButton(2)) {
+        		if(xBox2.getRawButton(2)) {
         			intakeBinWheel1.set(.8);
         			intakeBinWheel2.set(.8);
         		}
         		//X
-        		if(xBox1.getRawButton(3)) {
+        		if(xBox2.getRawButton(3)) {
         			intakeBinWheel1.set(-.8);
         			intakeBinWheel2.set(-.8);
         		}
         		//Y
-        		if(xBox1.getRawButton(4)) {
+        		if(xBox2.getRawButton(4)) {
         			setElevator(false);
         		}		
         		//L Top Trigger
-        		if(xBox1.getRawButton(5)) {
+        		if(xBox2.getRawButton(5)) {
         			putDownBox();       			
         		}      		
         		//R Top Trigger
-        		if(xBox1.getRawButton(6)) {
+        		if(xBox2.getRawButton(6)) {
         			pickUpBox();
         		}    
         		//Left Bin Lifter (Left JoyStick Button)
-        		if(xBox1.getRawButton(9) && !xBox2Button9Pressed){
+        		if(xBox2.getRawButton(9) && !xBox2Button9Pressed){
         			if(solenoidBinLifter1.get() == DoubleSolenoid.Value.kForward) {
         				solenoidBinLifter1.set(DoubleSolenoid.Value.kReverse);
         			} else {
@@ -187,12 +186,12 @@ public class Robot extends SampleRobot
         			}
         			xBox2Button9Pressed = true;
         		}
-        		else if(!xBox1.getRawButton(9))
+        		else if(!xBox2.getRawButton(9))
         		{
         			xBox2Button9Pressed = false;
         		}       		
         		//Right Bin Lifter (Right JoyStick Button)
-        		if(xBox1.getRawButton(10) && !xBox2Button10Pressed){
+        		if(xBox2.getRawButton(10) && !xBox2Button10Pressed){
         			if(solenoidBinLifter2.get() == DoubleSolenoid.Value.kForward) {
         				solenoidBinLifter2.set(DoubleSolenoid.Value.kReverse);
         			} else {
@@ -200,7 +199,7 @@ public class Robot extends SampleRobot
         			}
         			xBox2Button10Pressed = true;
         		}
-        		else if(!xBox1.getRawButton(10))
+        		else if(!xBox2.getRawButton(10))
         		{
         			xBox2Button10Pressed = false;
         		}
@@ -319,17 +318,17 @@ public class Robot extends SampleRobot
     	else
     	{
     		//A
-        	if(xBox2.getRawButton(1)) {
+        	if(xBox1.getRawButton(1)) {
         		autonModeHandler.setAutonMode(1);
         		autonModeProgActive = false;
         	}
         	//B
-        	if(xBox2.getRawButton(2)) {
+        	if(xBox1.getRawButton(2)) {
         		autonModeProgActive = false;
         		autonModeHandler.setAutonMode(2);
         	}
         	//X
-        	if(xBox2.getRawButton(4)) {
+        	if(xBox1.getRawButton(4)) {
         		autonModeProgActive = false;
         		autonModeHandler.setAutonMode(3);
         	}
