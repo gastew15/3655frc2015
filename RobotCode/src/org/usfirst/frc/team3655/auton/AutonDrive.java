@@ -1,7 +1,6 @@
 package org.usfirst.frc.team3655.auton;
 
-import org.usfirst.frc.team3655.robot.Robot;
-
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.RobotDrive;
 
@@ -38,9 +37,9 @@ public class AutonDrive extends AutonBase
 	public void iterate(int milisecondsToRun, double milisecondDelayTimeValue) 
 	{
 		counter = 0;
-		while(counter * milisecondDelayTimeValue < milisecondsToRun && Robot.isEnabled && Robot.isAutonomous)
+		while(counter * milisecondDelayTimeValue * 1000 < milisecondsToRun && DriverStation.getInstance().isEnabled() && DriverStation.getInstance().isAutonomous())
 		{
-			drive.mecanumDrive_Polar(y, x, rotation);
+			drive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
 			Timer.delay(milisecondDelayTimeValue);
 			counter++;
 		}		

@@ -9,8 +9,6 @@ package org.usfirst.frc.team3655.auton;
 public abstract class AutonBase 
 {
 	int counter;
-	boolean isEnabled;
-	boolean isAutonomous;
 	
 	public AutonBase()
 	{
