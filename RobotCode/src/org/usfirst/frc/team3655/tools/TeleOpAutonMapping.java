@@ -1,11 +1,11 @@
-package org.usfirst.frc.team3655.robot;
+package org.usfirst.frc.team3655.tools;
 
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * Autonmous mapping from tele op driving system
  * @author G. Stewart
- * @version 3/30/2015
+ * @version 5/13/2015
  */
 
 public class TeleOpAutonMapping 
@@ -21,5 +21,8 @@ public class TeleOpAutonMapping
 		this.joystick = joystick;
 	}	
 	
-	
+	public void startMapping()
+	{
+		
+	}
 }

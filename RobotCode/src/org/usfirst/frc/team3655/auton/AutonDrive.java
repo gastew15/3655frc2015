@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.RobotDrive;
 /**
  * Auton class for driving auton modes
  * @author G. Stewart
- * @version 3/31/2015
+ * @version 5/15/2015
  */
 
 public class AutonDrive extends AutonBase
@@ -16,6 +16,8 @@ public class AutonDrive extends AutonBase
 	double y;
 	double rotation;
 	RobotDrive drive;
+	enum DriveType {Mecanum, Tank};
+	DriveType driveType;
 	
 	/**
 	 * Main constructor (Mecanum Drive)
@@ -31,6 +33,22 @@ public class AutonDrive extends AutonBase
 		this.y = y;
 		this.rotation = rotation;
 		this.drive = drive;
+		driveType = DriveType.Mecanum;
+	}
+	
+	/**
+	 * Main constructor (Tank Drive)
+	 * @param left the leftStick value to pass into base
+	 * @param right the rightStick value to pass into base
+	 * @param drive what drive base to set the values to
+	 */
+	public AutonDrive(double left, double right, RobotDrive drive)
+	{
+		super();
+		this.x = left;
+		this.y = right;
+		this.drive = drive;
+		driveType = DriveType.Tank;
 	}
 	
 	@Override
@@ -39,7 +57,15 @@ public class AutonDrive extends AutonBase
 		counter = 0;
 		while(counter * milisecondDelayTimeValue * 1000 < milisecondsToRun && DriverStation.getInstance().isEnabled() && DriverStation.getInstance().isAutonomous())
 		{
-			drive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+			switch(driveType)
+			{
+				case Mecanum:
+					drive.mecanumDrive_Polar(Math.sqrt(x * x + y * y), (Math.toDegrees(Math.atan2(y, x)) - 90), rotation);
+				break;
+				case Tank:
+					drive.tankDrive(x, y);
+				break;
+			}	
 			Timer.delay(milisecondDelayTimeValue);
 			counter++;
 		}		
