@@ -2,13 +2,12 @@ package org.usfirst.frc.team3655.tools;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * Autonmous mapping from tele op driving system
  * @author G. Stewart
- * @version 5/13/2015
+ * @version 5/14/2015
  */
 
 public class TeleOpAutonMapping 
@@ -28,12 +27,27 @@ public class TeleOpAutonMapping
 	
 	public void startMapping()
 	{
-		//Loop for running
-			//Get buttons changed and as they do have the times down
-		
-		//End of loop set old joystick to current
+		currentButtons = getButtonStates(joystick);
+		previousButtons = getButtonStates(joystick);
+		List<Integer> buttonsChanged;
+		//while(true)
+		{
+			currentButtons = getButtonStates(joystick);
+			
+			//Get buttons changed and as they do have the times down			
+			buttonsChanged = getButtonsChanged(currentButtons, previousButtons);
+			
+			//Transfer Buttons changed into timings needed for the buttons (Only if they are held count up and then when not reset)
+			
+			//If Exit Button pressed
+			//if(exitButton == Pressed)
+			//break;
+			
+			//End of loop set old joystick to current
+			previousButtons = currentButtons;
+		}
 	}
-	
+
 	private boolean[] getButtonStates(Joystick joystick)
 	{
 		boolean[] buttonStates = new boolean[joystick.getButtonCount()];
